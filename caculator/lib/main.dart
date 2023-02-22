@@ -80,7 +80,11 @@ class _MyHomePageState extends State<MyHomePage> {
             value == '%' ||
             value == '0')) return;
     setState(() {
-      userInput += value;
+      if (userInput != "0") {
+        userInput += value;
+      } else {
+        userInput = value;
+      }
     });
   }
 
