@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:todo/form.dart';
+import 'package:todo/singleTask.dart';
 
 void main() {
   runApp(const MyApp());
@@ -15,7 +17,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+      home: const MyHomePage(title: 'Todo App'),
     );
   }
 }
@@ -30,39 +32,58 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
+  List<String> todoList = [];
 
-  void _incrementCounter() {
+  void handleAddTodo(title) {
     setState(() {
-      _counter++;
+      todoList.add(title);
     });
+  }
+
+  void handleDelete(title) {
+    setState(() {
+      todoList.removeAt(todoList.indexOf(title));
+    });
+
+    Navigator.pop(context);
+  }
+
+  void handleEdit(currentTitle, preTitle) {
+    int preIndex = todoList.indexOf(preTitle);
+    setState(() {
+      todoList[preIndex] = currentTitle;
+    });
+    Navigator.pop(context);
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.title),
-      ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            const Text(
-              'You have pushed the button this many times:',
-            ),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headline4,
-            ),
-          ],
+        appBar: AppBar(
+          title: Text(widget.title),
         ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
-    );
+        body: ListView(
+          padding: const EdgeInsets.only(bottom: 100),
+          children: List.generate(todoList.length, (index) {
+            return MySingleTask(
+              time: "7:30 AM",
+              title: todoList[index],
+              handleDelete: handleDelete,
+              handleEdit: handleEdit,
+            );
+          }),
+        ),
+        floatingActionButton: FloatingActionButton(
+          onPressed: () {
+            showDialog(
+                context: context,
+                builder: (context) {
+                  return MyForm(
+                    handleAddTodo: (title) => {handleAddTodo(title)},
+                  );
+                });
+          },
+          child: const Icon(Icons.add),
+        ));
   }
 }
