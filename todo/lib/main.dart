@@ -45,10 +45,13 @@ class _MyHomePageState extends State<MyHomePage> {
   void handleTodo(item, action, currentItem, preItem) {
     switch (action) {
       case 'edit':
+        // if (Data.validData(item) == false) return;
         myData.handleEdit(preItem, currentItem);
         setState(() {
           todoList = myData.getData();
         });
+        Navigator.pop(context);
+
         break;
       case 'delete':
         myData.handleDelete(item);
@@ -63,10 +66,12 @@ class _MyHomePageState extends State<MyHomePage> {
         });
         break;
       case 'Add':
+        if (Data.validData(item) == false) return;
         myData.handleAdd(item);
         setState(() {
           todoList = myData.getData();
         });
+        Navigator.pop(context);
         break;
     }
   }
@@ -101,24 +106,33 @@ class _MyHomePageState extends State<MyHomePage> {
           ));
     });
     return Scaffold(
-        appBar: AppBar(
-          title: Text(widget.title),
-        ),
-        body: ListView(
-          padding: const EdgeInsets.only(bottom: 100),
-          children: list,
-        ),
-        floatingActionButton: FloatingActionButton(
-          onPressed: () {
-            Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => CreateTask(
-                          handleTodo: handleTodo,
-                          action: 'Add',
-                        )));
-          },
-          child: const Icon(Icons.add),
-        ));
+      appBar: AppBar(
+        backgroundColor: const Color.fromARGB(255, 224, 141, 116),
+        title:
+            Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+          Text(widget.title),
+          TextButton(
+            onPressed: () {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => CreateTask(
+                            handleTodo: handleTodo,
+                            action: 'Add',
+                          )));
+            },
+            child: const Icon(
+              Icons.add,
+              color: Colors.white,
+              size: 30,
+            ),
+          )
+        ]),
+      ),
+      body: ListView(
+        padding: const EdgeInsets.only(bottom: 100),
+        children: list,
+      ),
+    );
   }
 }

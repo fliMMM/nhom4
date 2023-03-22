@@ -1,5 +1,7 @@
 import 'dart:ffi';
 
+import 'package:todo/logic/caculate.dart';
+
 class Data {
   List<Map> todoList = [];
 
@@ -7,9 +9,21 @@ class Data {
     return todoList;
   }
 
-  static int getDiffDay(Map item) {
-    return int.parse(item['endDate'].split('/')[0]) -
+  static String getDiffDay(Map item) {
+    int diffDay = int.parse(item['endDate'].split('/')[0]) -
         int.parse(item['startDate'].split('/')[0]);
+    if (diffDay > 0) return "Còn $diffDay ngày";
+
+    int diffHour = int.parse(item['endTime'].split(':')[0]) -
+        int.parse(item['startTime'].split(':')[0]);
+    if (diffDay == 0 && diffHour > 0) return "Còn $diffHour giờ";
+
+    int diffMinute = int.parse(item['endTime'].split(':')[1]) -
+        int.parse(item['startTime'].split(':')[1]);
+
+    if (diffHour == 0 && diffMinute > 0) return "Còn $diffMinute phút";
+
+    return "Hết hạn";
   }
 
   void handleAdd(Map item) {
@@ -38,8 +52,6 @@ class Data {
       }
     }
 
-    print(index);
-
     // print(currItem.toString());
     if (index != -1) {
       todoList.removeAt(index);
@@ -52,5 +64,18 @@ class Data {
         todoList[i]['isFinish'] = !todoList[i]['isFinish'];
       }
     }
+  }
+
+  static bool validData(item) {
+    if (item['title'] == "") return false;
+    if (item['content'] == "") return false;
+    if (item['startTime'] == "") return false;
+    if (item['startDate'] == "") return false;
+    if (item['endTime'] == "") return false;
+    if (item['endDate'] == "") return false;
+
+    if (Caculator.compareNowAndEndDate(item) == false) return false;
+    if (Caculator.compareStartTimeAndEndTime(item) == false) return false;
+    return true;
   }
 }

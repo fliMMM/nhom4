@@ -27,15 +27,15 @@ class MySingleTask extends StatelessWidget {
       child: Card(
           color: todoItem['isFinish']
               ? Colors.green
-              : (Caculator.quaHan(todoItem)
-                  ? Color.fromARGB(255, 224, 141, 116)
+              : (Caculator.compareNowAndEndDate(todoItem)
+                  ? const Color.fromARGB(190, 255, 240, 2)
                   : Colors.red),
           margin: const EdgeInsets.only(left: 20, right: 20, top: 10),
           shape:
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
           child: Padding(
             padding:
-                const EdgeInsets.only(left: 20, right: 20, top: 10, bottom: 20),
+                const EdgeInsets.only(left: 20, right: 15, top: 10, bottom: 20),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -43,26 +43,56 @@ class MySingleTask extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      "Starting date: ${todoItem['startDate']}",
-                      style: const TextStyle(color: Colors.white),
+                      "Ngày bắt đầu: ${todoItem['startDate']}",
+                      style: const TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 15),
                     ),
-                    Padding(
-                      padding: EdgeInsets.only(left: 20),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-                          ThreeDot(
-                              id: todoItem['id'],
-                              handleDelete: handleDelete,
-                              handleTodo: handleTodo),
-                          Checkbox(
+                    Row(
+                      children: [
+                        SizedBox(
+                          width: 30,
+                          child: Checkbox(
                               checkColor: Colors.white,
                               value: todoItem['isFinish'],
                               onChanged: (value) {
                                 handleTodo(todoItem['id'], 'finish', {}, {});
                               }),
-                        ],
-                      ),
+                        ),
+                        SizedBox(
+                          width: 30,
+                          child: TextButton(
+                              onPressed: () {
+                                showDialog(
+                                    context: context,
+                                    builder: (context) {
+                                      return AlertDialog(
+                                        shape: RoundedRectangleBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(16)),
+                                        content: SizedBox(
+                                          height: 100,
+                                          child: ElevatedButton(
+                                              style: ElevatedButton.styleFrom(
+                                                  backgroundColor: Colors.red),
+                                              onPressed: () {
+                                                handleTodo(todoItem['id'],
+                                                    'delete', {}, {});
+                                                Navigator.pop(context);
+                                              },
+                                              child: const Text("Xóa")),
+                                        ),
+                                      );
+                                    });
+                              },
+                              child: const Icon(
+                                Icons.close,
+                                color: Colors.red,
+                                size: 30,
+                              )),
+                        ),
+                      ],
                     )
                   ],
                 ),
@@ -70,16 +100,16 @@ class MySingleTask extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      todoItem['title'].length > 15
-                          ? '${todoItem['title'].substring(0, 16)} ...'
+                      todoItem['title'].length > 14
+                          ? '${todoItem['title'].substring(0, 14)} ...'
                           : todoItem['title'],
                       style: const TextStyle(
                           fontWeight: FontWeight.bold,
-                          fontSize: 25,
+                          fontSize: 23,
                           color: Colors.white),
                     ),
                     Text(
-                      "${Data.getDiffDay(todoItem)} Day",
+                      Data.getDiffDay(todoItem),
                       style: const TextStyle(color: Colors.white),
                     )
                   ],
@@ -89,39 +119,4 @@ class MySingleTask extends StatelessWidget {
           )),
     );
   }
-}
-
-Widget ThreeDot({id, handleDelete, handleTodo}) {
-  return PopupMenuButton(
-      iconSize: 30,
-      icon: const Icon(
-        Icons.more_horiz,
-        color: Colors.white,
-      ),
-      itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
-            PopupMenuItem(
-              value: 'delete',
-              child: ElevatedButton(
-                  onPressed: () {
-                    showDialog(
-                        context: context,
-                        builder: (context) {
-                          return AlertDialog(
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(16)),
-                            content: SizedBox(
-                              height: 100,
-                              child: ElevatedButton(
-                                  onPressed: () {
-                                    handleTodo(id, 'delete', {}, {});
-                                    Navigator.pop(context);
-                                  },
-                                  child: const Text("Xoas")),
-                            ),
-                          );
-                        });
-                  },
-                  child: const Text("Delete")),
-            ),
-          ]);
 }

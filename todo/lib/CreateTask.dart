@@ -15,9 +15,10 @@ class CreateTask extends StatefulWidget {
 class _CreateTaskState extends State<CreateTask> {
   String title = "";
   String content = "";
-  String startTime = 'Thời gian';
+  String startTime = "${DateTime.now().hour}:${DateTime.now().minute}";
   String endTime = 'Thời gian';
-  String startDate = 'Ngày';
+  String startDate =
+      "${DateTime.now().day}/${DateTime.now().month}/${DateTime.now().year}";
   String endDate = 'Ngày';
 
   Future<void> handleDatePicker(BuildContext context, label) async {
@@ -64,12 +65,10 @@ class _CreateTaskState extends State<CreateTask> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
+          backgroundColor: const Color.fromARGB(255, 224, 141, 116),
           title: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            mainAxisAlignment: MainAxisAlignment.end,
             children: [
-              const Text(
-                "edit",
-              ),
               TextButton(
                 onPressed: () {
                   if (widget.action == 'edit') {
@@ -98,7 +97,7 @@ class _CreateTaskState extends State<CreateTask> {
                           'isFinish': widget.preItem['isFinish']
                         },
                         widget.preItem);
-                    Navigator.pop(context);
+
                     return;
                   } else {
                     widget.handleTodo({
@@ -111,10 +110,9 @@ class _CreateTaskState extends State<CreateTask> {
                       'endTime': endTime,
                       'isFinish': false
                     }, 'Add', "", "");
-                    Navigator.pop(context);
                   }
                 },
-                child: const Text("Save",
+                child: const Text("Lưu",
                     style: TextStyle(color: Colors.white, fontSize: 18)),
               )
             ],
@@ -152,6 +150,7 @@ class _CreateTaskState extends State<CreateTask> {
                 children: [
                   const Text(
                     "Bắt đầu",
+                    style: TextStyle(fontWeight: FontWeight.bold),
                   ),
                   Row(
                     children: [
@@ -179,7 +178,8 @@ class _CreateTaskState extends State<CreateTask> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text("Kết thúc"),
+                  const Text("Kết thúc",
+                      style: TextStyle(fontWeight: FontWeight.bold)),
                   Row(
                     children: [
                       TextButton(
