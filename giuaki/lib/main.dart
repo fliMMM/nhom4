@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:giuaki/calendar.dart';
+import 'package:giuaki/UI/calendar.dart';
 
 void main() {
   runApp(const MyApp());
