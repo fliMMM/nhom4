@@ -43,21 +43,31 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   void handleTodo(item, action, currentItem, preItem) {
-    if (action == 'edit') {
-      myData.handleEdit(preItem, currentItem);
-      setState(() {
-        todoList = myData.getData();
-      });
-    } else if (action == 'delete') {
-      myData.handleDelete(item);
-      setState(() {
-        todoList = myData.getData();
-      });
-    } else {
-      myData.handleAdd(item);
-      setState(() {
-        todoList = myData.getData();
-      });
+    switch (action) {
+      case 'edit':
+        myData.handleEdit(preItem, currentItem);
+        setState(() {
+          todoList = myData.getData();
+        });
+        break;
+      case 'delete':
+        myData.handleDelete(item);
+        setState(() {
+          todoList = myData.getData();
+        });
+        break;
+      case 'finish':
+        myData.finish(item);
+        setState(() {
+          todoList = myData.getData();
+        });
+        break;
+      case 'Add':
+        myData.handleAdd(item);
+        setState(() {
+          todoList = myData.getData();
+        });
+        break;
     }
   }
 

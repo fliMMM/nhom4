@@ -3,17 +3,6 @@ import 'dart:ffi';
 class Data {
   List<Map> todoList = [];
 
-  Data() {
-    todoList.add({
-      'title': 'nau com',
-      'startDate': '20/12/2022',
-      'endDate': '22/12/2022',
-      'startTime': '20/12/2022',
-      'endTime': '10/12/2022',
-      'content': 'hehe'
-    });
-  }
-
   dynamic getData() {
     return todoList;
   }
@@ -41,17 +30,27 @@ class Data {
     }
   }
 
-  void handleDelete(item) {
+  void handleDelete(id) {
     int index = -1;
     for (int i = 0; i < todoList.length; i++) {
-      if (todoList[i]['id'] == item['id']) {
+      if (todoList[i]['id'] == id) {
         index = i;
       }
     }
 
+    print(index);
+
     // print(currItem.toString());
     if (index != -1) {
       todoList.removeAt(index);
+    }
+  }
+
+  void finish(id) {
+    for (int i = 0; i < todoList.length; i++) {
+      if (todoList[i]['id'] == id) {
+        todoList[i]['isFinish'] = !todoList[i]['isFinish'];
+      }
     }
   }
 }

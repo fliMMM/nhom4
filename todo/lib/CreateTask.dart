@@ -31,10 +31,12 @@ class _CreateTaskState extends State<CreateTask> {
         setState(() {
           startDate =
               "${pickedDate.day}/${pickedDate.month}/${pickedDate.year}";
+          widget.preItem['startDate'] = startDate;
         });
       } else {
         setState(() {
           endDate = "${pickedDate.day}/${pickedDate.month}/${pickedDate.year}";
+          widget.preItem['endDate'] = endDate;
         });
       }
     }
@@ -47,10 +49,12 @@ class _CreateTaskState extends State<CreateTask> {
       if (label == 'start') {
         setState(() {
           startTime = pickedTime.format(context);
+          widget.preItem['startTime'] = startTime;
         });
       } else {
         setState(() {
           endTime = pickedTime.format(context);
+          widget.preItem['endTime'] = endTime;
         });
       }
     }
