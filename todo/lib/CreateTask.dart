@@ -1,76 +1,203 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/container.dart';
-import 'package:flutter/src/widgets/framework.dart';
+import 'package:uuid/uuid.dart';
 
 class CreateTask extends StatefulWidget {
-  const CreateTask({super.key});
+  late Function handleTodo;
+  dynamic action;
+  dynamic preItem;
+  CreateTask({super.key, required this.handleTodo, this.action, this.preItem});
 
   @override
   State<CreateTask> createState() => _CreateTaskState();
 }
 
 class _CreateTaskState extends State<CreateTask> {
-  final titleController = TextEditingController();
-  late Function handleTodo;
-  dynamic action;
-  dynamic preTitle;
+  String title = "";
+  String content = "";
+  String startTime = 'Thời gian';
+  String endTime = 'Thời gian';
+  String startDate = 'Ngày';
+  String endDate = 'Ngày';
 
-  @override
-  void initState() {
-    super.initState();
+  Future<void> handleDatePicker(BuildContext context, label) async {
+    final DateTime? pickedDate = await showDatePicker(
+        context: context,
+        initialDate: DateTime.now(),
+        firstDate: DateTime(2019),
+        lastDate: DateTime(2030));
+    if (pickedDate != null) {
+      if (label == 'start') {
+        setState(() {
+          startDate =
+              "${pickedDate.day}/${pickedDate.month}/${pickedDate.year}";
+        });
+      } else {
+        setState(() {
+          endDate = "${pickedDate.day}/${pickedDate.month}/${pickedDate.year}";
+        });
+      }
+    }
+  }
+
+  Future<void> handleTimePicker(BuildContext context, label) async {
+    final TimeOfDay? pickedTime =
+        await showTimePicker(context: context, initialTime: TimeOfDay.now());
+    if (pickedTime != null) {
+      if (label == 'start') {
+        setState(() {
+          startTime = pickedTime.format(context);
+        });
+      } else {
+        setState(() {
+          endTime = pickedTime.format(context);
+        });
+      }
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text("Create"),
-      ),
-      body: SizedBox(
-        height: 200,
-        child: Column(
+        appBar: AppBar(
+          title: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              TextFormField(
-                controller: titleController,
-                decoration: const InputDecoration(labelText: "title"),
+              const Text(
+                "edit",
               ),
-              ElevatedButton(
-                  onPressed: () {
-                    showTimePicker(
-                        context: context, initialTime: TimeOfDay.now());
-                  },
-                  child: const Text("time")),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: [
-                  ElevatedButton(
-                    onPressed: () {
-                      Navigator.pop(context);
-                    },
-                    style:
-                        ElevatedButton.styleFrom(backgroundColor: Colors.red),
-                    child: const Text("Cancel"),
-                  ),
-                  ElevatedButton(
-                      onPressed: () {
-                        if (action == 'edit') {
-                          handleTodo(titleController.text, 'edit',
-                              titleController.text, preTitle);
-                          Navigator.pop(context);
-                          return;
-                        }
-                        handleTodo(
-                          titleController.text,
-                          action,
-                        );
-                      },
-                      child: Text(action == "edit" ? "edit" : "Add"))
-                ],
+              TextButton(
+                onPressed: () {
+                  if (widget.action == 'edit') {
+                    widget.handleTodo(
+                        "",
+                        'edit',
+                        {
+                          'id': widget.preItem['id'],
+                          'title':
+                              title == "" ? widget.preItem['title'] : title,
+                          'content': content == ""
+                              ? widget.preItem['content']
+                              : content,
+                          'startDate': startDate == "Ngày"
+                              ? widget.preItem['startDate']
+                              : startDate,
+                          'endDate': endDate == "Ngày"
+                              ? widget.preItem['endDate']
+                              : endDate,
+                          'startTime': startTime == "Thời gian"
+                              ? widget.preItem['startTime']
+                              : startTime,
+                          'endTime': endTime == "Thời gian"
+                              ? widget.preItem['endTime']
+                              : endTime,
+                          'isFinish': widget.preItem['isFinish']
+                        },
+                        widget.preItem);
+                    Navigator.pop(context);
+                    return;
+                  } else {
+                    widget.handleTodo({
+                      'id': Uuid().v1(),
+                      'title': title,
+                      'content': content,
+                      'startDate': startDate,
+                      'endDate': endDate,
+                      'startTime': startTime,
+                      'endTime': endTime,
+                      'isFinish': false
+                    }, 'Add', "", "");
+                    Navigator.pop(context);
+                  }
+                },
+                child: const Text("Save",
+                    style: TextStyle(color: Colors.white, fontSize: 18)),
               )
-            ]),
-      ),
-    );
+            ],
+          ),
+        ),
+        body: Padding(
+          padding: const EdgeInsets.all(20),
+          child: Column(children: [
+            TextFormField(
+              onChanged: (value) {
+                setState(() {
+                  title = value;
+                });
+              },
+              initialValue:
+                  widget.action == 'edit' ? widget.preItem['title'] : "",
+              decoration: const InputDecoration(labelText: "Tiêu đề"),
+            ),
+            TextFormField(
+              maxLines: null,
+              keyboardType: TextInputType.multiline,
+              onChanged: (value) {
+                setState(() {
+                  content = value;
+                });
+              },
+              initialValue:
+                  widget.action == 'edit' ? widget.preItem['content'] : "",
+              decoration: const InputDecoration(labelText: "Nội dung"),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(top: 20),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text(
+                    "Bắt đầu",
+                  ),
+                  Row(
+                    children: [
+                      TextButton(
+                          onPressed: () {
+                            handleTimePicker(context, 'start');
+                          },
+                          child: Text(widget.action == 'edit'
+                              ? widget.preItem['startTime']
+                              : startTime)),
+                      TextButton(
+                          onPressed: () {
+                            handleDatePicker(context, 'start');
+                          },
+                          child: Text(widget.action == 'edit'
+                              ? widget.preItem['startDate']
+                              : startDate)),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(top: 20),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text("Kết thúc"),
+                  Row(
+                    children: [
+                      TextButton(
+                          onPressed: () {
+                            handleTimePicker(context, 'end');
+                          },
+                          child: Text(widget.action == 'edit'
+                              ? widget.preItem['endTime']
+                              : endTime)),
+                      TextButton(
+                          onPressed: () {
+                            handleDatePicker(context, 'end');
+                          },
+                          child: Text(widget.action == 'edit'
+                              ? widget.preItem['endDate']
+                              : endDate)),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ]),
+        ));
   }
 }

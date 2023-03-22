@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:todo/CreateTask.dart';
-import 'package:todo/form.dart';
+import 'package:todo/logic/data.dart';
 import 'package:todo/singleTask.dart';
 
 void main() {
@@ -33,24 +33,37 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  List<String> todoList = [];
+  Data myData = Data();
+  List<Map> todoList = [];
 
-  void handleTodo(title, action, currentTitle, preTitle) {
+  @override
+  void initState() {
+    super.initState();
+    todoList = myData.getData();
+  }
+
+  void handleTodo(item, action, currentItem, preItem) {
     if (action == 'edit') {
-      int preIndex = todoList.indexOf(preTitle);
+      myData.handleEdit(preItem, currentItem);
       setState(() {
-        todoList[preIndex] = currentTitle;
+        todoList = myData.getData();
+      });
+    } else if (action == 'delete') {
+      myData.handleDelete(item);
+      setState(() {
+        todoList = myData.getData();
       });
     } else {
+      myData.handleAdd(item);
       setState(() {
-        todoList.add(title);
+        todoList = myData.getData();
       });
     }
   }
 
   void handleDelete(title) {
     setState(() {
-      todoList.removeAt(todoList.indexOf(title));
+      myData.getData().removeAt(myData.getData().indexOf(title));
     });
 
     Navigator.pop(context);
@@ -58,33 +71,42 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
+    var list = List.generate(todoList.length, (index) {
+      return TextButton(
+          onPressed: () {
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => CreateTask(
+                          handleTodo: handleTodo,
+                          preItem: todoList[index],
+                          action: 'edit',
+                        )));
+          },
+          child: MySingleTask(
+            time: "7:30 AM",
+            todoItem: todoList[index],
+            handleDelete: handleDelete,
+            handleTodo: handleTodo,
+          ));
+    });
     return Scaffold(
         appBar: AppBar(
           title: Text(widget.title),
         ),
         body: ListView(
           padding: const EdgeInsets.only(bottom: 100),
-          children: List.generate(todoList.length, (index) {
-            return MySingleTask(
-              time: "7:30 AM",
-              title: todoList[index],
-              handleDelete: handleDelete,
-              handleTodo: handleTodo,
-            );
-          }),
+          children: list,
         ),
         floatingActionButton: FloatingActionButton(
           onPressed: () {
-            Navigator.push(context,
-                MaterialPageRoute(builder: (context) => const CreateTask()));
-            // showDialog(
-            //     context: context,
-            //     builder: (context) {
-            //       return MyForm(
-            //         handleTodo: (title, action) =>
-            //             {handleTodo(title, action, "", "")},
-            //       );
-            //     });
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => CreateTask(
+                          handleTodo: handleTodo,
+                          action: 'Add',
+                        )));
           },
           child: const Icon(Icons.add),
         ));

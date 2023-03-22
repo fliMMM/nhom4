@@ -1,18 +1,20 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:todo/form.dart';
+import 'package:todo/logic/data.dart';
 
 class MySingleTask extends StatelessWidget {
   String time = "";
   String title = "";
+  Map todoItem;
   Function handleDelete;
   Function handleTodo;
   MySingleTask(
       {super.key,
       required this.time,
-      required this.title,
       required this.handleDelete,
-      required this.handleTodo});
+      required this.handleTodo,
+      required this.todoItem});
 
   @override
   Widget build(BuildContext context) {
@@ -31,7 +33,7 @@ class MySingleTask extends StatelessWidget {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    const Text("Starting date: 20/12/2022"),
+                    Text("Starting date: ${todoItem['startDate']}"),
                     ThreeDot(
                         title: title,
                         handleDelete: handleDelete,
@@ -43,16 +45,16 @@ class MySingleTask extends StatelessWidget {
                   children: [
                     Container(
                       child: Text(
-                        title.length > 15
-                            ? '${title.substring(0, 16)} ...'
-                            : title,
+                        todoItem['title'].length > 15
+                            ? '${todoItem['title'].substring(0, 16)} ...'
+                            : todoItem['title'],
                         style: const TextStyle(
                           fontWeight: FontWeight.bold,
                           fontSize: 25,
                         ),
                       ),
                     ),
-                    const Text("1days")
+                    Text("${Data.getDiffDay(todoItem)} Day")
                   ],
                 )
               ],
@@ -69,21 +71,6 @@ Widget ThreeDot({title, handleDelete, handleTodo}) {
         iconSize: 30,
         itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
               PopupMenuItem(
-                  value: 'edit',
-                  child: ElevatedButton(
-                      onPressed: () {
-                        showDialog(
-                            context: context,
-                            builder: (context) {
-                              return MyForm(
-                                preTitle: title,
-                                action: 'edit',
-                                handleTodo: handleTodo,
-                              );
-                            });
-                      },
-                      child: const Text("Edit"))),
-              PopupMenuItem(
                 value: 'delete',
                 child: ElevatedButton(
                     onPressed: () {
@@ -97,7 +84,7 @@ Widget ThreeDot({title, handleDelete, handleTodo}) {
                                 height: 100,
                                 child: ElevatedButton(
                                     onPressed: () {
-                                      handleDelete(title);
+                                      handleTodo({}, 'delete', {}, {});
                                       Navigator.pop(context);
                                     },
                                     child: const Text("Xoas")),
