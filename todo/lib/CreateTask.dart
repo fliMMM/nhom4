@@ -1,21 +1,33 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/src/widgets/container.dart';
+import 'package:flutter/src/widgets/framework.dart';
 
-class MyForm extends StatelessWidget {
+class CreateTask extends StatefulWidget {
+  const CreateTask({super.key});
+
+  @override
+  State<CreateTask> createState() => _CreateTaskState();
+}
+
+class _CreateTaskState extends State<CreateTask> {
   final titleController = TextEditingController();
-  final handleTodo;
+  late Function handleTodo;
   dynamic action;
   dynamic preTitle;
 
-  MyForm({super.key, this.handleTodo, this.action, this.preTitle}) {
-    if (action == 'edit') {
-      titleController.text = preTitle;
-    }
+  @override
+  void initState() {
+    super.initState();
   }
+
   @override
   Widget build(BuildContext context) {
-    return AlertDialog(
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-      content: SizedBox(
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text("Create"),
+      ),
+      body: SizedBox(
         height: 200,
         child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:todo/CreateTask.dart';
 import 'package:todo/form.dart';
 import 'package:todo/singleTask.dart';
 
@@ -34,10 +35,17 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   List<String> todoList = [];
 
-  void handleAddTodo(title) {
-    setState(() {
-      todoList.add(title);
-    });
+  void handleTodo(title, action, currentTitle, preTitle) {
+    if (action == 'edit') {
+      int preIndex = todoList.indexOf(preTitle);
+      setState(() {
+        todoList[preIndex] = currentTitle;
+      });
+    } else {
+      setState(() {
+        todoList.add(title);
+      });
+    }
   }
 
   void handleDelete(title) {
@@ -45,14 +53,6 @@ class _MyHomePageState extends State<MyHomePage> {
       todoList.removeAt(todoList.indexOf(title));
     });
 
-    Navigator.pop(context);
-  }
-
-  void handleEdit(currentTitle, preTitle) {
-    int preIndex = todoList.indexOf(preTitle);
-    setState(() {
-      todoList[preIndex] = currentTitle;
-    });
     Navigator.pop(context);
   }
 
@@ -69,19 +69,22 @@ class _MyHomePageState extends State<MyHomePage> {
               time: "7:30 AM",
               title: todoList[index],
               handleDelete: handleDelete,
-              handleEdit: handleEdit,
+              handleTodo: handleTodo,
             );
           }),
         ),
         floatingActionButton: FloatingActionButton(
           onPressed: () {
-            showDialog(
-                context: context,
-                builder: (context) {
-                  return MyForm(
-                    handleAddTodo: (title) => {handleAddTodo(title)},
-                  );
-                });
+            Navigator.push(context,
+                MaterialPageRoute(builder: (context) => const CreateTask()));
+            // showDialog(
+            //     context: context,
+            //     builder: (context) {
+            //       return MyForm(
+            //         handleTodo: (title, action) =>
+            //             {handleTodo(title, action, "", "")},
+            //       );
+            //     });
           },
           child: const Icon(Icons.add),
         ));
