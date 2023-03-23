@@ -6,6 +6,7 @@ class Data {
   List<Map> todoList = [];
 
   dynamic getData() {
+    sortByFinish();
     return todoList;
   }
 
@@ -77,5 +78,15 @@ class Data {
     if (Caculator.compareNowAndEndDate(item) == false) return false;
     if (Caculator.compareStartTimeAndEndTime(item) == false) return false;
     return true;
+  }
+
+  void sortByFinish() {
+    todoList.sort((a, b) {
+      if (a['isFinish']) {
+        return 1;
+      }
+
+      return -1;
+    });
   }
 }
