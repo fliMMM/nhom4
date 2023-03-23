@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:giuaki/logic/Calendar.dart';
@@ -25,13 +26,9 @@ class _CustomCalendarState extends State<CustomCalendar> {
   Widget build(BuildContext context) {
     return Container(
       height: 100,
-      child: ListView(
-        scrollDirection: Axis.horizontal,
-        children: List.generate(1, (index) {
-          print(daysInMonth);
-          return Container();
-        }),
-      ),
+      width: double.infinity,
+      child: Text("hehe"),
+      decoration: BoxDecoration(color: Color.fromARGB(255, 212, 223, 235)),
     );
   }
 }
