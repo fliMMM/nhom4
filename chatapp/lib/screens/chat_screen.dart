@@ -1,33 +1,12 @@
-import 'package:chatapp/models/message.dart';
 import 'package:flutter/material.dart';
 import 'widgets/boxchat.dart';
 
-class SingleChat{
-  final String time;
-  final String sender;
-  final String message;
-  SingleChat({required this.time,required this.sender,required this.message});
-  factory SingleChat.fromJson(Map<String,dynamic> json){
-    return SingleChat(
-      time:json['time'].toString(),
-      sender:json['sender'].toString(),
-      message:json['message'].toString()
-    );
-  }
-}
 
-class Data {
-  final String stuff;
-  final List<SingleChat> messageData;
-  Data({required this.stuff,required this.messageData});
-  factory Data.fromJson(Map<String,dynamic> parsedJson) {
-    return Data(
-      stuff: parsedJson['stuff'].toString(),
-      messageData: parsedJson["data"]
-    );
-  }
-}
 
+void handleSend(e){
+  // ignore: avoid_print
+  print(e.toString());
+}
 
 
 class ChatScreen extends StatefulWidget {
@@ -38,34 +17,73 @@ class ChatScreen extends StatefulWidget {
 }
 
 class _ChatScreenState extends State<ChatScreen> {
+  
+  ScrollController listScrollController = ScrollController();
   @override
   Widget build(BuildContext context) {
+    String? text;
     return Scaffold(
       appBar: AppBar(
         
         title: const Text("Chat screen"),
       ),
-      body: ListView(
-        reverse: true,
-        children: const <Widget>[
-          BoxChat(isUser:true,data: "hehe"),
-          BoxChat(isUser:false,data: "huhu asd jka skj dga askdj gas kjhd ga skd as kjd hak sjg ak djs g adk"),
-          BoxChat(isUser:true,data: "hhihi"),
-          BoxChat(isUser:true,data: "hehe"),
-          BoxChat(isUser:false,data: "huhu asd jka skj dga askdj gas kjhd ga skd as kjd hak sjg ak djs g adk"),
-          BoxChat(isUser:true,data: "hhihi"),
-          BoxChat(isUser:true,data: "hehe"),
-          BoxChat(isUser:false,data: "huhu asd jka skj dga askdj gas kjhd ga skd as kjd hak sjg ak djs g adk"),
-          BoxChat(isUser:true,data: "hhihi"),
-          BoxChat(isUser:true,data: "hehe"),
-          BoxChat(isUser:false,data: "huhu asd jka skj dga askdj gas kjhd ga skd as kjd hak sjg ak djs g adk"),
-          BoxChat(isUser:true,data: "hhihi"),
-          BoxChat(isUser:true,data: "hehe"),
-          BoxChat(isUser:false,data: "huhu asd jka skj dga askdj gas kjhd ga skd as kjd hak sjg ak djs g adk"),
-          BoxChat(isUser:true,data: "hhihi"),
-          BoxChat(isUser:true,data: "hhihi"),
-          BoxChat(isUser:true,data: "hhihi"),
-        ],
+      body: Container(
+        height: MediaQuery.of(context).size.height,
+        width: MediaQuery.of(context).size.width,
+        color: Colors.grey[400],
+        child: Stack(
+          children: [
+            ListView.builder(
+              shrinkWrap: true,
+              controller: listScrollController,
+              itemCount:20,
+              padding: const EdgeInsets.only(bottom: 50,top:10),
+              itemBuilder: (BuildContext context, int index) {
+                  return BoxChat(isUser: index%3==0, data: "hieu 123 hieu 123 hieu 123 hieu 123 hieu 123 hieu 123 hieu 123 hieu 123 hieu 123 hieu 123 hieu 123 hieu 123${index.toString()}");
+                },
+          
+            ),
+            Align(
+              alignment: Alignment.bottomCenter,
+              child: Row(
+                children: [
+                  SizedBox(
+                    width: MediaQuery.of(context).size.width-40,
+                    child: Card(
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                      child: TextFormField(
+                        keyboardType: TextInputType.multiline,
+                        maxLines: 3,
+                        minLines: 1,
+                        decoration: const InputDecoration(
+                          hintText: "Type a message...",
+                          contentPadding: EdgeInsets.all(10)
+                        ),
+
+                        onChanged: (e)=>{text=e.toString()},
+                      ),
+                    )
+                  ),
+                  CircleAvatar(
+                    child: IconButton(
+                      icon:const Icon(Icons.arrow_right_sharp
+
+                      ),
+                      onPressed: ()=>{
+                        handleSend(text),
+                        listScrollController.animateTo(
+                          listScrollController.position.maxScrollExtent,
+                          duration: const Duration(microseconds: 500),
+                          curve: Curves.easeOut
+                          )
+                        }
+                    ),
+                  ),
+                ],
+              )
+            )
+          ],
+        )
       )
     );
   }

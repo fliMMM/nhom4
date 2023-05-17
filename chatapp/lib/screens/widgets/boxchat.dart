@@ -11,9 +11,10 @@ class BoxChat extends StatelessWidget {
         Align(
           alignment: isUser?Alignment.topRight:Alignment.topLeft,
           child:  Container(
-            constraints: const BoxConstraints(maxWidth: 200),
+            margin: const EdgeInsets.all(5),
+            constraints: const BoxConstraints(maxWidth: 300),
               child: Card(
-                color: isUser?Colors.blue:Colors.grey[100],
+                color: isUser?Colors.blue:Colors.grey[200],
                 child: Padding(
                   padding: const EdgeInsets.all(10),
                   child:Text(data,style: TextStyle(color:isUser?Colors.white:Colors.black))
