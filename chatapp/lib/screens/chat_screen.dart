@@ -33,7 +33,8 @@ class _ChatScreenState extends State<ChatScreen> {
         color: Colors.grey[400],
         child: Stack(
           children: [
-            ListView.builder(
+            Container(
+              child: ListView.builder(
               shrinkWrap: true,
               controller: listScrollController,
               itemCount:20,
@@ -42,8 +43,10 @@ class _ChatScreenState extends State<ChatScreen> {
                   return BoxChat(isUser: index%3==0, data: "hieu 123 hieu 123 hieu 123 hieu 123 hieu 123 hieu 123 hieu 123 hieu 123 hieu 123 hieu 123 hieu 123 hieu 123${index.toString()}");
                 },
           
+              ),
             ),
-            Align(
+            Container(
+              child: Align(
               alignment: Alignment.bottomCenter,
               child: Row(
                 children: [
@@ -61,6 +64,7 @@ class _ChatScreenState extends State<ChatScreen> {
                         ),
 
                         onChanged: (e)=>{text=e.toString()},
+                        
                       ),
                     )
                   ),
@@ -81,6 +85,7 @@ class _ChatScreenState extends State<ChatScreen> {
                   ),
                 ],
               )
+            ),
             )
           ],
         )
