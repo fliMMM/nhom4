@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'widgets/boxchat.dart';
+import '../widgets/boxchat.dart';
 
 
 
