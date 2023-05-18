@@ -1,12 +1,62 @@
 import 'package:flutter/material.dart';
 import '../widgets/boxchat.dart';
+import '../widgets/appbar_chatscreen.dart';
 
+var fakedata=[
+      {
+        "sender":"hieu",
+        "data":"Solo Aatrox khong?"
+      },
+      {
+        "sender":"back",
+        "data":"thoi t so lam"
+      },
+      {
+        "sender":"hieu",
+        "data":"tuong the nao"
+      },
+      {
+        "sender":"hieu",
+        "data":"lan trc solo thua la do t nhuong m aatrox thoi"
+      },
+      {
+        "sender":"back",
+        "data":"ghe vay sao"
+      },
+      {
+        "sender":"hieu",
+        "data":"la ro, k ghe sao lai solo thang dc"
+      },
+      {
+        "sender":"back",
+        "data":"m la nhat roi"
+      },
+      {
+        "sender":"back",
+        "data":"khong ai nhu m het"
+      },
+      {
+        "sender":"back",
+        "data":"khong ai nhu m het"
+      },
+      {
+        "sender":"back",
+        "data":"khong ai nhu m het"
+      },
+      {
+        "sender":"back",
+        "data":"khong ai nhu m het"
+      },
+      {
+        "sender":"back",
+        "data":"khong ai nhu m het"
+      },
+      {
+        "sender":"back",
+        "data":"khong ai nhu m het"
+      },
+    ];
 
-
-void handleSend(e){
-  // ignore: avoid_print
-  print(e.toString());
-}
 
 
 class ChatScreen extends StatefulWidget {
@@ -19,28 +69,48 @@ class ChatScreen extends StatefulWidget {
 class _ChatScreenState extends State<ChatScreen> {
   
   ScrollController listScrollController = ScrollController();
+  TextEditingController textInputController = TextEditingController();
   @override
   Widget build(BuildContext context) {
-    String? text;
+
+    String text="";
+    void handleSend(e){
+      
+      if(e!=""){
+        setState(() {
+        fakedata.add({"sender":"hieu","data":e.toString()});
+        textInputController.clear();
+        listScrollController.animateTo(
+          listScrollController.position.maxScrollExtent+70,
+          duration: const Duration(microseconds: 500),
+          curve: Curves.easeOut
+          );
+        text="";
+      });
+      }
+    }
+    
+
     return Scaffold(
       appBar: AppBar(
         
-        title: const Text("Chat screen"),
+        title: const MessBar(),
+        
       ),
       body: Container(
         height: MediaQuery.of(context).size.height,
         width: MediaQuery.of(context).size.width,
-        color: Colors.grey[400],
+        color: Colors.white,
         child: Stack(
           children: [
             Container(
               child: ListView.builder(
+              padding: const EdgeInsets.only(bottom: 50,top:10),
               shrinkWrap: true,
               controller: listScrollController,
-              itemCount:20,
-              padding: const EdgeInsets.only(bottom: 50,top:10),
+              itemCount:fakedata.length,
               itemBuilder: (BuildContext context, int index) {
-                  return BoxChat(isUser: index%3==0, data: "hieu 123 hieu 123 hieu 123 hieu 123 hieu 123 hieu 123 hieu 123 hieu 123 hieu 123 hieu 123 hieu 123 hieu 123${index.toString()}");
+                  return BoxChat(isUser: fakedata[index]['sender']=="hieu", data: fakedata[index]['data'].toString());
                 },
           
               ),
@@ -55,9 +125,7 @@ class _ChatScreenState extends State<ChatScreen> {
                     child: Card(
                       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
                       child: TextFormField(
-                        keyboardType: TextInputType.multiline,
-                        maxLines: 3,
-                        minLines: 1,
+                        controller: textInputController,
                         decoration: const InputDecoration(
                           hintText: "Type a message...",
                           contentPadding: EdgeInsets.all(10)
@@ -75,11 +143,6 @@ class _ChatScreenState extends State<ChatScreen> {
                       ),
                       onPressed: ()=>{
                         handleSend(text),
-                        listScrollController.animateTo(
-                          listScrollController.position.maxScrollExtent,
-                          duration: const Duration(microseconds: 500),
-                          curve: Curves.easeOut
-                          )
                         }
                     ),
                   ),

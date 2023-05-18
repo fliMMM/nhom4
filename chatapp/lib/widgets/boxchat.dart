@@ -14,6 +14,7 @@ class BoxChat extends StatelessWidget {
             margin: const EdgeInsets.all(5),
             constraints: const BoxConstraints(maxWidth: 300),
               child: Card(
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
                 color: isUser?Colors.blue:Colors.grey[200],
                 child: Padding(
                   padding: const EdgeInsets.all(10),
