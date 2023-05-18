@@ -1,8 +1,8 @@
-import 'package:chatapp/screens/conversations_screen.dart';
+import 'package:chatapp/models/auth.dart';
 import 'package:chatapp/screens/register_screen.dart';
 import 'package:chatapp/utils/validator.dart';
 import 'package:chatapp/widgets/MyInput.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -17,18 +17,7 @@ class _LoginScreenState extends State<LoginScreen> {
   final passwordController = TextEditingController();
   final validator = Validator();
 
-  CollectionReference collectionReference =
-      FirebaseFirestore.instance.collection("test");
-
-  Future<void> getData() async {
-    QuerySnapshot querySnapshot = await collectionReference.get();
-
-    var allData = querySnapshot.docs.map((e) => e.data()).toList();
-
-    print(allData);
-  }
-
-  void showMyDialog(String text, BuildContext context) {
+  void showMyDialog(String text) {
     showDialog(
         context: context,
         builder: (content) {
@@ -40,25 +29,32 @@ class _LoginScreenState extends State<LoginScreen> {
         });
   }
 
-  Future<void> login(BuildContext comtext) async {
+  Future<void> login(BuildContext context) async {
     FocusManager.instance.primaryFocus?.unfocus();
     String email = emailController.text;
     String password = passwordController.text;
 
     if (email == "" || password == "") {
-      showMyDialog("Chưa nhập email hoặc mật khẩu!!", context);
+      showMyDialog("Chưa nhập email hoặc mật khẩu!!");
       return;
     }
 
     if (validator.emailValidator(email) == false) {
-      showMyDialog("Email chưa đúng định dạng!!", context);
+      showMyDialog("Email chưa đúng định dạng!!");
       return;
     }
 
-    print("email: " + email);
-    print("password: " + password);
-    Navigator.pushReplacement(context,
-        MaterialPageRoute(builder: (context) => const ConversationScreen()));
+    try {
+      await Auth().signInWithEmailAndPassword(email: email, password: password);
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'user-not-found') {
+        showMyDialog('Tài khoản chưa tồn tại!');
+      } else if (e.code == 'wrong-password') {
+        showMyDialog('Sai email hoặc mật khẩu!!');
+      }
+    } catch (e) {
+      print(e);
+    }
   }
 
   @override
@@ -129,7 +125,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                           BorderRadius.circular(20)))),
                           child: const Text("Tạo tài khoản mới"),
                           onPressed: () {
-                            Navigator.push(
+                            Navigator.pushReplacement(
                                 context,
                                 MaterialPageRoute(
                                     builder: (context) =>

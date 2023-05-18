@@ -26,8 +26,8 @@ class _MyInputState extends State<MyInput> {
           suffixIcon: widget.label != "Email"
               ? IconButton(
                   icon: obscureText == true
-                      ? Icon(Icons.visibility_off)
-                      : Icon(Icons.visibility),
+                      ? const Icon(Icons.visibility_off)
+                      : const Icon(Icons.visibility),
                   onPressed: () {
                     setState(() {
                       obscureText = !obscureText;
