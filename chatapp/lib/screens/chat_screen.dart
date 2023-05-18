@@ -100,7 +100,7 @@ class _ChatScreenState extends State<ChatScreen> {
       body: Container(
         height: MediaQuery.of(context).size.height,
         width: MediaQuery.of(context).size.width,
-        color: Colors.white,
+        color: Colors.grey[100],
         child: Stack(
           children: [
             Container(
@@ -118,37 +118,40 @@ class _ChatScreenState extends State<ChatScreen> {
             Container(
               child: Align(
               alignment: Alignment.bottomCenter,
-              child: Row(
-                children: [
-                  SizedBox(
-                    width: MediaQuery.of(context).size.width-40,
-                    child: Card(
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-                      child: TextFormField(
-                        controller: textInputController,
-                        decoration: const InputDecoration(
-                          hintText: "Type a message...",
-                          contentPadding: EdgeInsets.all(10)
+              child: Container (
+                color: Colors.grey[100],
+                child: Row(
+                    children: [
+                      SizedBox(
+                        width: MediaQuery.of(context).size.width-40,
+                        child: Card(
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                          child: TextFormField(
+                            controller: textInputController,
+                            decoration: const InputDecoration(
+                              hintText: "Type a message...",
+                              contentPadding: EdgeInsets.all(10)
+                            ),
+
+                            onChanged: (e)=>{text=e.toString()},
+                            
+                          ),
+                        )
+                      ),
+                      CircleAvatar(
+                        child: IconButton(
+                          icon:const Icon(Icons.arrow_right_sharp
+
+                          ),
+                          onPressed: ()=>{
+                            handleSend(text),
+                          }
                         ),
-
-                        onChanged: (e)=>{text=e.toString()},
-                        
                       ),
-                    )
+                    ],
                   ),
-                  CircleAvatar(
-                    child: IconButton(
-                      icon:const Icon(Icons.arrow_right_sharp
-
-                      ),
-                      onPressed: ()=>{
-                        handleSend(text),
-                        }
-                    ),
-                  ),
-                ],
-              )
-            ),
+                )
+              ),
             )
           ],
         )

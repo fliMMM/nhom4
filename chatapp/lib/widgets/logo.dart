@@ -8,22 +8,22 @@ class UserLogo extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return CircleAvatar(
-      radius: size,
-      backgroundImage: NetworkImage(imgUrl),
-      child: Stack(
-        children: [
-          Align(
-            alignment: Alignment.bottomRight,
-            child: CircleAvatar(
-              radius: size/4,
-              backgroundColor: Colors.white,
-              child: const CircleAvatar(
-                backgroundColor: Colors.green,
-              ) // change this children 
-            )
+    return Container(
+      height: size*2,
+      width: size*2,
+      child: CircleAvatar(
+        radius: size,
+        backgroundImage: NetworkImage(imgUrl),
+        child: Align(
+          alignment: Alignment.bottomRight,
+          child: CircleAvatar(
+            radius: size/4,
+            backgroundColor: Colors.white,
+            child: const CircleAvatar(
+              backgroundColor: Colors.green,
+            ) // change this children 
           )
-        ]
+        )
       )
     );
   }

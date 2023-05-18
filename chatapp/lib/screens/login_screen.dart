@@ -1,8 +1,8 @@
-import 'package:chatapp/screens/conversations_screen.dart';
+import 'package:chatapp/models/auth.dart';
 import 'package:chatapp/screens/register_screen.dart';
 import 'package:chatapp/utils/validator.dart';
 import 'package:chatapp/widgets/MyInput.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -16,19 +16,9 @@ class _LoginScreenState extends State<LoginScreen> {
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
   final validator = Validator();
+  bool isLoading = false;
 
-  CollectionReference collectionReference =
-      FirebaseFirestore.instance.collection("test");
-
-  Future<void> getData() async {
-    QuerySnapshot querySnapshot = await collectionReference.get();
-
-    var allData = querySnapshot.docs.map((e) => e.data()).toList();
-
-    print(allData);
-  }
-
-  void showMyDialog(String text, BuildContext context) {
+  void showMyDialog(String text) {
     showDialog(
         context: context,
         builder: (content) {
@@ -40,25 +30,44 @@ class _LoginScreenState extends State<LoginScreen> {
         });
   }
 
-  Future<void> login(BuildContext comtext) async {
+  Future<void> login() async {
     FocusManager.instance.primaryFocus?.unfocus();
     String email = emailController.text;
     String password = passwordController.text;
 
     if (email == "" || password == "") {
-      showMyDialog("Chưa nhập email hoặc mật khẩu!!", context);
+      showMyDialog("Chưa nhập email hoặc mật khẩu!!");
       return;
     }
 
     if (validator.emailValidator(email) == false) {
-      showMyDialog("Email chưa đúng định dạng!!", context);
+      showMyDialog("Email chưa đúng định dạng!!");
       return;
     }
 
-    print("email: " + email);
-    print("password: " + password);
-    Navigator.pushReplacement(context,
-        MaterialPageRoute(builder: (context) => const ConversationScreen()));
+    setState(() {
+      isLoading = true;
+    });
+
+    try {
+      await Auth().signInWithEmailAndPassword(email: email, password: password);
+      setState(() {
+        isLoading = false;
+      });
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'user-not-found') {
+        showMyDialog('Tài khoản chưa tồn tại!');
+      } else if (e.code == 'wrong-password') {
+        showMyDialog('Sai email hoặc mật khẩu!!');
+      }
+      setState(() {
+        isLoading = false;
+      });
+    } catch (e) {
+      setState(() {
+        isLoading = false;
+      });
+    }
   }
 
   @override
@@ -89,23 +98,32 @@ class _LoginScreenState extends State<LoginScreen> {
                               label: "Mật khẩu",
                               textEditingController: passwordController),
                           SizedBox(
-                            width: double.infinity,
-                            child: OutlinedButton(
+                              width: double.infinity,
+                              child: OutlinedButton(
                                 style: ButtonStyle(
-                                    backgroundColor: MaterialStateProperty.all(
-                                        const Color.fromRGBO(0, 100, 224, 1)),
+                                    backgroundColor: isLoading == true
+                                        ? MaterialStateProperty.all(Colors.grey)
+                                        : MaterialStateProperty.all(
+                                            const Color.fromRGBO(
+                                                0, 100, 224, 1)),
                                     shape: MaterialStateProperty.all(
                                         RoundedRectangleBorder(
                                             borderRadius:
                                                 BorderRadius.circular(20)))),
-                                child: const Text(
-                                  "Đăng nhập",
-                                  style: TextStyle(color: Colors.white),
-                                ),
-                                onPressed: () {
-                                  login(context);
-                                }),
-                          ),
+                                onPressed: isLoading == false ? login : null,
+                                child: isLoading == false
+                                    ? const Text(
+                                        "Đăng nhập",
+                                        style: TextStyle(color: Colors.white),
+                                      )
+                                    : const SizedBox(
+                                        width: 20,
+                                        height: 20,
+                                        child: CircularProgressIndicator(
+                                          color: Colors.white,
+                                        ),
+                                      ),
+                              )),
                           SizedBox(
                             width: double.infinity,
                             child: TextButton(
@@ -129,7 +147,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                           BorderRadius.circular(20)))),
                           child: const Text("Tạo tài khoản mới"),
                           onPressed: () {
-                            Navigator.push(
+                            Navigator.pushReplacement(
                                 context,
                                 MaterialPageRoute(
                                     builder: (context) =>
