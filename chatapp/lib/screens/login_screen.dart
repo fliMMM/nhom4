@@ -16,6 +16,7 @@ class _LoginScreenState extends State<LoginScreen> {
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
   final validator = Validator();
+  bool isLoading = false;
 
   void showMyDialog(String text) {
     showDialog(
@@ -29,7 +30,7 @@ class _LoginScreenState extends State<LoginScreen> {
         });
   }
 
-  Future<void> login(BuildContext context) async {
+  Future<void> login() async {
     FocusManager.instance.primaryFocus?.unfocus();
     String email = emailController.text;
     String password = passwordController.text;
@@ -44,16 +45,28 @@ class _LoginScreenState extends State<LoginScreen> {
       return;
     }
 
+    setState(() {
+      isLoading = true;
+    });
+
     try {
       await Auth().signInWithEmailAndPassword(email: email, password: password);
+      setState(() {
+        isLoading = false;
+      });
     } on FirebaseAuthException catch (e) {
       if (e.code == 'user-not-found') {
         showMyDialog('Tài khoản chưa tồn tại!');
       } else if (e.code == 'wrong-password') {
         showMyDialog('Sai email hoặc mật khẩu!!');
       }
+      setState(() {
+        isLoading = false;
+      });
     } catch (e) {
-      print(e);
+      setState(() {
+        isLoading = false;
+      });
     }
   }
 
@@ -85,23 +98,32 @@ class _LoginScreenState extends State<LoginScreen> {
                               label: "Mật khẩu",
                               textEditingController: passwordController),
                           SizedBox(
-                            width: double.infinity,
-                            child: OutlinedButton(
+                              width: double.infinity,
+                              child: OutlinedButton(
                                 style: ButtonStyle(
-                                    backgroundColor: MaterialStateProperty.all(
-                                        const Color.fromRGBO(0, 100, 224, 1)),
+                                    backgroundColor: isLoading == true
+                                        ? MaterialStateProperty.all(Colors.grey)
+                                        : MaterialStateProperty.all(
+                                            const Color.fromRGBO(
+                                                0, 100, 224, 1)),
                                     shape: MaterialStateProperty.all(
                                         RoundedRectangleBorder(
                                             borderRadius:
                                                 BorderRadius.circular(20)))),
-                                child: const Text(
-                                  "Đăng nhập",
-                                  style: TextStyle(color: Colors.white),
-                                ),
-                                onPressed: () {
-                                  login(context);
-                                }),
-                          ),
+                                onPressed: isLoading == false ? login : null,
+                                child: isLoading == false
+                                    ? const Text(
+                                        "Đăng nhập",
+                                        style: TextStyle(color: Colors.white),
+                                      )
+                                    : const SizedBox(
+                                        width: 20,
+                                        height: 20,
+                                        child: CircularProgressIndicator(
+                                          color: Colors.white,
+                                        ),
+                                      ),
+                              )),
                           SizedBox(
                             width: double.infinity,
                             child: TextButton(

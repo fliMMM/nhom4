@@ -17,6 +17,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
   final confirmPasswordController = TextEditingController();
+  bool isLoading = false;
 
   final validator = Validator();
 
@@ -32,7 +33,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
         });
   }
 
-  Future<void> register(BuildContext context) async {
+  Future<void> register() async {
     FocusManager.instance.primaryFocus?.unfocus();
     String email = emailController.text;
     String password = passwordController.text;
@@ -52,11 +53,18 @@ class _RegisterScreenState extends State<RegisterScreen> {
       return;
     }
 
+    setState(() {
+      isLoading = true;
+    });
+
     try {
       await Auth().registerWithEmailAndPassword(
         email: email,
         password: password,
       );
+      setState(() {
+        isLoading = false;
+      });
       if (context.mounted) {
         Navigator.pushReplacement(
             context,
@@ -69,8 +77,13 @@ class _RegisterScreenState extends State<RegisterScreen> {
       } else if (e.code == 'email-already-in-use') {
         showMyDialog('Tài khoản đã tồn tại!');
       }
+      setState(() {
+        isLoading = false;
+      });
     } catch (e) {
-      print(e);
+      setState(() {
+        isLoading = false;
+      });
     }
   }
 
@@ -105,23 +118,31 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           label: "Xác nhận mật khẩu",
                           textEditingController: confirmPasswordController),
                       SizedBox(
-                        width: double.infinity,
-                        child: OutlinedButton(
+                          width: double.infinity,
+                          child: OutlinedButton(
                             style: ButtonStyle(
-                                backgroundColor: MaterialStateProperty.all(
-                                    const Color.fromRGBO(0, 100, 224, 1)),
+                                backgroundColor: isLoading == true
+                                    ? MaterialStateProperty.all(Colors.grey)
+                                    : MaterialStateProperty.all(
+                                        const Color.fromRGBO(0, 100, 224, 1)),
                                 shape: MaterialStateProperty.all(
                                     RoundedRectangleBorder(
                                         borderRadius:
                                             BorderRadius.circular(20)))),
-                            child: const Text(
-                              "Đăng ký",
-                              style: TextStyle(color: Colors.white),
-                            ),
-                            onPressed: () {
-                              register(context);
-                            }),
-                      ),
+                            onPressed: isLoading == false ? register : null,
+                            child: isLoading == false
+                                ? const Text(
+                                    "Đăng ký",
+                                    style: TextStyle(color: Colors.white),
+                                  )
+                                : const SizedBox(
+                                    width: 20,
+                                    height: 20,
+                                    child: CircularProgressIndicator(
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                          )),
                       TextButton(
                           onPressed: () {
                             Navigator.pushReplacement(
