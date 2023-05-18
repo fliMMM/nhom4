@@ -1,3 +1,4 @@
+import 'package:chatapp/models/auth.dart';
 import 'package:flutter/material.dart';
 
 class ConversationScreen extends StatefulWidget {
@@ -13,6 +14,12 @@ class _ConversationScreenState extends State<ConversationScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text("Conversation screen"),
+      ),
+      body: TextButton(
+        child: const Text("sign out"),
+        onPressed: () {
+          Auth().signOut();
+        },
       ),
     );
   }
