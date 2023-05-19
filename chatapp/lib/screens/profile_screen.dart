@@ -55,8 +55,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
             SizedBox(
               height: 18,
             ),
-            // field About
-            _fieldAboutInfo(),
+            // field phone
+            _fieldPhone(),
             SizedBox(height: 12),
           ],
         )),
@@ -135,7 +135,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
-  Widget _fieldAboutInfo() {
+  Widget _fieldPhone() {
     return TextFormField(
       initialValue: phone,
       decoration: InputDecoration(
