@@ -18,7 +18,7 @@ class _WidgetTreeState extends State<WidgetTree> {
     return StreamBuilder(
       stream: Auth().getAuthStateChanges(),
       builder: ((context, snapshot) {
-        print("data: " + snapshot.data.toString());
+        // print("data: " + snapshot.data.toString());
         if (snapshot.data != null) {
           return const ConversationScreen();
         }

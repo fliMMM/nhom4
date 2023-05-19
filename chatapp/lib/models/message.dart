@@ -1,7 +1,14 @@
-class Message {
-  String text = "";
-  String sender = "";
-  String receiver = "";
+import 'package:cloud_firestore/cloud_firestore.dart';
 
-  Message({required this.text, required this.receiver, required this.sender});
+class Message {
+  String senderId = "";
+  String receiverId = "";
+  String messges = "";
+  int timestamp;
+
+  Message(
+      {required this.messges,
+      required this.receiverId,
+      required this.senderId,
+      required this.timestamp});
 }

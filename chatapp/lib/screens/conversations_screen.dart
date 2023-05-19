@@ -98,7 +98,9 @@ class _ConversationScreenState extends State<ConversationScreen> {
                     Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => const ChatScreen()));
+                            builder: (context) => const ChatScreen(
+                                  conversationsId: "j7xp8BZ9bDM8myoSIpGl",
+                                )));
                   },
                   child: Row(
                     children: [
