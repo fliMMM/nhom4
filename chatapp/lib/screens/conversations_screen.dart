@@ -5,6 +5,40 @@ import 'package:chatapp/widgets/drawer.dart';
 import 'package:flutter/material.dart';
 import '../widgets/logo.dart';
 
+
+final fakedata=[
+      {
+        "sender":"hieu",
+        "data":"Solo Aatrox khong?"
+      },
+      {
+        "sender":"back",
+        "data":"thoi t so lam"
+      },
+      {
+        "sender":"hieu",
+        "data":"tuong the nao"
+      },
+      {
+        "sender":"hieu",
+        "data":"lan trc solo thua la do t nhuong m aatrox thoi"
+      },
+      {
+        "sender":"back",
+        "data":"ghe vay sao"
+      },
+      {
+        "sender":"hieu",
+        "data":"la ro, k ghe sao lai solo thang dc"
+      },
+      {
+        "sender":"back",
+        "data":"m la nhat roi"
+      },
+    ];
+
+List _userFilter=fakedata;
+
 class ConversationScreen extends StatefulWidget {
   const ConversationScreen({super.key});
 
@@ -15,7 +49,24 @@ class ConversationScreen extends StatefulWidget {
 class _ConversationScreenState extends State<ConversationScreen> {
   @override
   Widget build(BuildContext context) {
-    String searchText = "";
+    void handleUserFilter(String text){
+      // ignore: avoid_print
+      List rs=[];
+      if(text.isEmpty){
+        rs=fakedata;
+      }
+      else{
+        rs=fakedata.where((user) => user["sender"].toString().toLowerCase().contains(text.toLowerCase())).toList();
+      }
+      setState(() {
+        _userFilter=rs;
+        // ignore: avoid_print
+        print(_userFilter);
+      });
+
+    }
+
+
 
     return Scaffold(
       appBar: AppBar(
@@ -64,7 +115,7 @@ class _ConversationScreenState extends State<ConversationScreen> {
                 padding: const EdgeInsets.only(left: 10, right: 10),
                 decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(30),
-                    color: Colors.grey[300]),
+                    color: Colors.grey[200]),
                 child: Row(
                   children: [
                     const Icon(
@@ -76,6 +127,8 @@ class _ConversationScreenState extends State<ConversationScreen> {
                       width: MediaQuery.of(context).size.width - 120,
                       child: TextFormField(
                         textAlignVertical: TextAlignVertical.center,
+                        // ignore: avoid_print
+                        onChanged: (value) => handleUserFilter(value),
                         style: const TextStyle(
                           // color: Colors.white,
                           fontSize: 20,
@@ -91,9 +144,10 @@ class _ConversationScreenState extends State<ConversationScreen> {
                 )),
             Expanded(
                 child: ListView.builder(
-              itemCount: fakedata.length,
+              itemCount: _userFilter.length,
               itemBuilder: (BuildContext context, int index) {
-                return GestureDetector(
+                return Card(
+                  child: GestureDetector(
                   onTap: () {
                     Navigator.push(
                         context,
@@ -113,17 +167,18 @@ class _ConversationScreenState extends State<ConversationScreen> {
                               size: 35,
                               imgUrl:
                                   "https://t4.ftcdn.net/jpg/00/97/58/97/360_F_97589769_t45CqXyzjz0KXwoBZT9PRaWGHRk5hQqQ.jpg")),
-                      SizedBox(
-                        width: MediaQuery.of(context).size.width - 90,
+                      Container(
+                        width: MediaQuery.of(context).size.width - 100,
                         height: 70,
+                        color: Colors.transparent,
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: const [
-                            Text("Rac ruoi",
+                          children: [
+                            Text(_userFilter[index]['sender'].toString(),
                                 style: TextStyle(
                                     fontSize: 20, fontWeight: FontWeight.w600)),
-                            Text('hihi',
+                            Text(_userFilter[index]['data'].toString(),
                                 style: TextStyle(
                                     fontSize: 17, fontWeight: FontWeight.w400))
                           ],
@@ -131,6 +186,7 @@ class _ConversationScreenState extends State<ConversationScreen> {
                       )
                     ],
                   ),
+                ),
                 );
               },
             )),
