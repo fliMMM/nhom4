@@ -1,6 +1,8 @@
 import 'package:chatapp/models/auth.dart';
+import 'package:chatapp/screens/Authentication/authentication.dart';
 import 'package:chatapp/screens/conversations_screen.dart';
-import 'package:chatapp/screens/login_screen.dart';
+import 'package:chatapp/screens/Authentication/login_screen.dart';
+import 'package:chatapp/screens/Authentication/register_screen.dart';
 import 'package:flutter/widgets.dart';
 
 class WidgetTree extends StatefulWidget {
@@ -20,7 +22,7 @@ class _WidgetTreeState extends State<WidgetTree> {
         if (snapshot.data != null) {
           return const ConversationScreen();
         }
-        return const LoginScreen();
+        return const AuthenticationScreen();
       }),
     );
   }
