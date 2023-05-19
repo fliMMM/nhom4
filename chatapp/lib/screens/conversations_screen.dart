@@ -38,7 +38,13 @@ class _ConversationScreenState extends State<ConversationScreen> {
           Builder(builder: (context) {
             return IconButton(
               onPressed: () {
-                Scaffold.of(context).openEndDrawer();
+                // Scaffold.of(context).openEndDrawer();
+                showModalBottomSheet(
+                    isScrollControlled: true,
+                    context: context,
+                    builder: (BuildContext context) {
+                      return addNewConversation(context: context);
+                    });
               },
               icon: const Icon(Icons.add_comment_outlined),
               iconSize: 30,
@@ -126,18 +132,18 @@ class _ConversationScreenState extends State<ConversationScreen> {
                 );
               },
             )),
-
-            // TextButton(onPressed: (){
-            //   Navigator.push(
-            // context,
-            // MaterialPageRoute(
-            //     builder: (context) => const ChatScreen()));
-            // }, child: Text("move"))
           ],
         ),
       ),
       drawer: const MyDrawer(),
-      endDrawer: const MyDrawer(),
     );
   }
+}
+
+Widget addNewConversation({required BuildContext context}) {
+  return SizedBox(
+    width: double.infinity,
+    height: MediaQuery.of(context).size.height - 100,
+    child: const Center(child: Text("hehe")),
+  );
 }

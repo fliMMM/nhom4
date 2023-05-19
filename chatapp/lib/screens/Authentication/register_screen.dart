@@ -1,14 +1,12 @@
 import 'package:chatapp/models/auth.dart';
-import 'package:chatapp/screens/conversations_screen.dart';
-import 'package:chatapp/screens/Authentication/login_screen.dart';
 import 'package:chatapp/utils/validator.dart';
 import 'package:chatapp/widgets/MyInput.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class RegisterScreen extends StatefulWidget {
-  Function gotoLoginScreen;
-  RegisterScreen({super.key, required this.gotoLoginScreen});
+  final Function gotoLoginScreen;
+  const RegisterScreen({super.key, required this.gotoLoginScreen});
 
   @override
   State<RegisterScreen> createState() => _RegisterScreenState();

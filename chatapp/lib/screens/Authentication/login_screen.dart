@@ -6,8 +6,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class LoginScreen extends StatefulWidget {
-  Function gotoRegisterScreen;
-  LoginScreen({super.key, required this.gotoRegisterScreen});
+  final Function gotoRegisterScreen;
+  const LoginScreen({super.key, required this.gotoRegisterScreen});
 
   @override
   State<LoginScreen> createState() => _LoginScreenState();
