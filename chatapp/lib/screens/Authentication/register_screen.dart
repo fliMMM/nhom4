@@ -1,13 +1,14 @@
 import 'package:chatapp/models/auth.dart';
 import 'package:chatapp/screens/conversations_screen.dart';
-import 'package:chatapp/screens/login_screen.dart';
+import 'package:chatapp/screens/Authentication/login_screen.dart';
 import 'package:chatapp/utils/validator.dart';
 import 'package:chatapp/widgets/MyInput.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class RegisterScreen extends StatefulWidget {
-  const RegisterScreen({super.key});
+  Function gotoLoginScreen;
+  RegisterScreen({super.key, required this.gotoLoginScreen});
 
   @override
   State<RegisterScreen> createState() => _RegisterScreenState();
@@ -62,15 +63,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
         email: email,
         password: password,
       );
+
       setState(() {
         isLoading = false;
       });
-      if (context.mounted) {
-        Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(
-                builder: (context) => const ConversationScreen()));
-      }
+
+      if (context.mounted) {}
     } on FirebaseAuthException catch (e) {
       if (e.code == 'weak-password') {
         showMyDialog('Mật khẩu quá yếu!');
@@ -145,10 +143,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           )),
                       TextButton(
                           onPressed: () {
-                            Navigator.pushReplacement(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => const LoginScreen()));
+                            widget.gotoLoginScreen();
                           },
                           child: const Text("Đăng nhập"))
                     ],
