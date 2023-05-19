@@ -1,12 +1,13 @@
 import 'package:chatapp/models/auth.dart';
-import 'package:chatapp/screens/register_screen.dart';
+import 'package:chatapp/screens/Authentication/register_screen.dart';
 import 'package:chatapp/utils/validator.dart';
 import 'package:chatapp/widgets/MyInput.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class LoginScreen extends StatefulWidget {
-  const LoginScreen({super.key});
+  Function gotoRegisterScreen;
+  LoginScreen({super.key, required this.gotoRegisterScreen});
 
   @override
   State<LoginScreen> createState() => _LoginScreenState();
@@ -147,11 +148,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                           BorderRadius.circular(20)))),
                           child: const Text("Tạo tài khoản mới"),
                           onPressed: () {
-                            Navigator.pushReplacement(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) =>
-                                        const RegisterScreen()));
+                            widget.gotoRegisterScreen();
                           }))
                 ])));
   }
