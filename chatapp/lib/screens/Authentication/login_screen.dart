@@ -1,5 +1,4 @@
 import 'package:chatapp/models/auth.dart';
-import 'package:chatapp/screens/Authentication/register_screen.dart';
 import 'package:chatapp/utils/validator.dart';
 import 'package:chatapp/widgets/MyInput.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -52,9 +51,6 @@ class _LoginScreenState extends State<LoginScreen> {
 
     try {
       await Auth().signInWithEmailAndPassword(email: email, password: password);
-      setState(() {
-        isLoading = false;
-      });
     } on FirebaseAuthException catch (e) {
       if (e.code == 'user-not-found') {
         showMyDialog('Tài khoản chưa tồn tại!');
@@ -65,6 +61,10 @@ class _LoginScreenState extends State<LoginScreen> {
         isLoading = false;
       });
     } catch (e) {
+      setState(() {
+        isLoading = false;
+      });
+    } finally {
       setState(() {
         isLoading = false;
       });
