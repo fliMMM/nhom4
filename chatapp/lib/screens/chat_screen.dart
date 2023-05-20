@@ -1,3 +1,6 @@
+import 'dart:async';
+import 'dart:math';
+
 import 'package:chatapp/models/auth.dart';
 import 'package:chatapp/screens/conversations_screen.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -39,7 +42,7 @@ class _ChatScreenState extends State<ChatScreen> {
   int _limitIncrement = 20;
   List listMessage = [];
   var currentUserId = Auth().getCurrentUSer()?.uid;
-  var messageStream;
+  late Stream<QuerySnapshot> messageStream;
 
   @override
   void initState() {
@@ -47,7 +50,9 @@ class _ChatScreenState extends State<ChatScreen> {
     listScrollController.addListener(_scroolListener);
     String conversationId = widget.conversationsId;
     messageStream = FirebaseFirestore.instance
-        .collection("conversations/$conversationId/messages")
+        .collection("messages")
+        .orderBy("timestamp")
+        .where("id", isEqualTo: widget.conversationsId)
         .snapshots();
   }
 
@@ -64,15 +69,20 @@ class _ChatScreenState extends State<ChatScreen> {
   }
 
   void handleSend() {
+    var userIds = widget.conversationsId.split("-");
     String message = textInputController.text;
 
     if (message != "") {
       final data = {
+        "id": widget.conversationsId,
         "senderId": currentUserId,
-        "receiverId": "123",
-        "messges": message,
+        "receiverId": userIds[0] == currentUserId ? userIds[1] : userIds[0],
+        "text": message,
         "timestamp": DateTime.now().microsecondsSinceEpoch
       };
+      FirebaseFirestore.instance.collection("messages").add(data).then((value) {
+        print("send message success: " + value.toString());
+      });
       setState(() {
         textInputController.clear();
         listScrollController.animateTo(
@@ -109,11 +119,20 @@ class _ChatScreenState extends State<ChatScreen> {
                         );
                       }
 
+                      if (snapshot.data!.docs.isEmpty) {
+                        return const Center(
+                          child: Text(
+                            "Hãy chat gì đó",
+                            style: TextStyle(color: Colors.grey),
+                          ),
+                        );
+                      }
+
                       return ListView(
                         padding: const EdgeInsets.only(bottom: 60),
                         controller: listScrollController,
                         reverse: true,
-                        children: snapshot.data!.docs
+                        children: snapshot.data!.docs.reversed
                             .map((DocumentSnapshot document) {
                               Map<String, dynamic> data =
                                   document.data()! as Map<String, dynamic>;
@@ -121,7 +140,7 @@ class _ChatScreenState extends State<ChatScreen> {
                               return BoxChat(
                                   isCurrentUserId:
                                       currentUserId == data["senderId"],
-                                  message: data["message"]);
+                                  message: data["text"]);
                             })
                             .toList()
                             .cast(),
