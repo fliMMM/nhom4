@@ -17,8 +17,8 @@ class MyDrawer extends StatelessWidget {
         padding: EdgeInsets.zero,
         children: [
           UserAccountsDrawerHeader(
-            accountName: Text('Amaru'),
-            accountEmail: Text('leduc@gmail.com'),
+            accountName: const Text('Amaru'),
+            accountEmail: const Text('leduc@gmail.com'),
             currentAccountPicture: ClipRRect(
               borderRadius: BorderRadius.circular(100),
               child: CachedNetworkImage(
@@ -28,7 +28,7 @@ class MyDrawer extends StatelessWidget {
                         child: Icon(CupertinoIcons.person),
                       )),
             ),
-            decoration: BoxDecoration(
+            decoration: const BoxDecoration(
               color: Colors.pinkAccent,
               image: DecorationImage(
                   image: NetworkImage(
@@ -37,7 +37,7 @@ class MyDrawer extends StatelessWidget {
             ),
           ),
           ListTile(
-            leading: Icon(Icons.message),
+            leading: const Icon(Icons.message),
             title: const Text(
               'Đoạn chat',
               style: TextStyle(fontSize: 16),
@@ -62,21 +62,21 @@ class MyDrawer extends StatelessWidget {
             },
           ),
           ListTile(
-              leading: Icon(Icons.share),
+              leading: const Icon(Icons.share),
               title: const Text(
                 'Share',
                 style: TextStyle(fontSize: 16),
               ),
               onTap: () => print('Share')),
           ListTile(
-              leading: Icon(Icons.notifications),
+              leading: const Icon(Icons.notifications),
               title: const Text(
                 'Thông báo',
                 style: TextStyle(fontSize: 16),
               ),
               onTap: () => print('thông báo')),
           ListTile(
-            leading: Icon(Icons.logout),
+            leading: const Icon(Icons.logout),
             title: const Text(
               'Đăng xuất',
               style: TextStyle(fontSize: 16),
