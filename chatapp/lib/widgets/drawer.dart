@@ -7,7 +7,6 @@ import 'package:flutter/material.dart';
 import '../screens/profile_screen.dart';
 
 class MyDrawer extends StatelessWidget {
-  get image => Auth().getCurrentUSer()?.photoURL;
   const MyDrawer({super.key});
 
   @override
@@ -17,8 +16,8 @@ class MyDrawer extends StatelessWidget {
         padding: EdgeInsets.zero,
         children: [
           UserAccountsDrawerHeader(
-            accountName: Text('Amaru'),
-            accountEmail: Text('leduc@gmail.com'),
+            accountName: const Text('Amaru'),
+            accountEmail: const Text('leduc@gmail.com'),
             currentAccountPicture: ClipRRect(
               borderRadius: BorderRadius.circular(100),
               child: CachedNetworkImage(
@@ -28,7 +27,7 @@ class MyDrawer extends StatelessWidget {
                         child: Icon(CupertinoIcons.person),
                       )),
             ),
-            decoration: BoxDecoration(
+            decoration: const BoxDecoration(
               color: Colors.pinkAccent,
               image: DecorationImage(
                   image: NetworkImage(
@@ -62,7 +61,7 @@ class MyDrawer extends StatelessWidget {
             },
           ),
           ListTile(
-              leading: Icon(Icons.share),
+              leading: const Icon(Icons.share),
               title: const Text(
                 'Share',
                 style: TextStyle(fontSize: 16),

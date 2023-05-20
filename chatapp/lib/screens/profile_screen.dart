@@ -43,22 +43,22 @@ class _ProfileScreenState extends State<ProfileScreen> {
           child: SingleChildScrollView(
               child: Column(
             children: [
-              SizedBox(
+              const SizedBox(
                 height: 20,
               ),
               // Anh dai dien
               _getImage(),
-              SizedBox(
+              const SizedBox(
                 height: 18,
               ),
               // Email
               _emailInfo(),
-              SizedBox(
+              const SizedBox(
                 height: 18,
               ),
               // field name
               _fieldNameInfo(),
-              SizedBox(
+              const SizedBox(
                 height: 18,
               ),
               // field phone

@@ -30,6 +30,11 @@ class ConversationScreen extends StatefulWidget {
 }
 
 class _ConversationScreenState extends State<ConversationScreen> {
+  void initState() {
+    super.initState();
+    Store.getSelfInfo();
+  }
+
   var currentUserId = Auth().getCurrentUSer()?.toString();
   final Stream<QuerySnapshot> conversationStream = FirebaseFirestore.instance
       .collection("Conversations")
