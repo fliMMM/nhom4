@@ -254,6 +254,7 @@ Widget addNewConversation({required BuildContext context}) {
               builder: (context, snapshot) {
                 final list = [];
                 final listImage = [];
+
                 if (snapshot.hasData) {
                   final data = snapshot.data?.docs;
                   for (var i in data!) {
