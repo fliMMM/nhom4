@@ -1,12 +1,14 @@
 import 'dart:ui';
 
 import 'package:chatapp/models/auth.dart';
+import 'package:chatapp/models/store.dart';
 import 'package:chatapp/screens/chat_screen.dart';
-import 'package:chatapp/screens/Authentication/login_screen.dart';
 import 'package:chatapp/widgets/drawer.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import '../widgets/logo.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
 final fakedata = [
   {"sender": "hieu", "data": "Solo Aatrox khong?"},
@@ -80,6 +82,7 @@ class _ConversationScreenState extends State<ConversationScreen> {
                 // Scaffold.of(context).openEndDrawer();
                 showModalBottomSheet(
                     isScrollControlled: true,
+                    isDismissible: true,
                     context: context,
                     builder: (BuildContext context) {
                       return addNewConversation(context: context);
@@ -219,9 +222,86 @@ class _ConversationScreenState extends State<ConversationScreen> {
 }
 
 Widget addNewConversation({required BuildContext context}) {
-  return SizedBox(
-    width: double.infinity,
-    height: MediaQuery.of(context).size.height - 100,
-    child: const Center(child: Text("hehe")),
+  return Padding(
+    padding: const EdgeInsets.all(8.0),
+    child: SizedBox(
+      width: double.infinity,
+      height: MediaQuery.of(context).size.height - 100,
+      child: Column(
+        children: [
+          const Center(
+              child: Text(
+            "Tin nhắn mới",
+            style: TextStyle(fontSize: 18, fontWeight: FontWeight.w400),
+          )),
+          const TextField(
+            keyboardType: TextInputType.text,
+            decoration: InputDecoration(
+                labelText: 'Đến:',
+                labelStyle: TextStyle(color: Colors.black, fontSize: 15)),
+          ),
+          const SizedBox(
+            height: 10,
+          ),
+          ListTile(
+              leading: const Icon(Icons.account_tree),
+              title: const Text(
+                'Tạo nhóm mới',
+                style: TextStyle(fontSize: 16),
+              ),
+              onTap: () => print('Tạo nhóm')),
+          const SizedBox(
+            height: 10,
+          ),
+          StreamBuilder(
+              stream: Store.firestore.collection('Users').snapshots(),
+              builder: (context, snapshot) {
+                final list = [];
+                final listImage = [];
+                if (snapshot.hasData) {
+                  final data = snapshot.data?.docs;
+                  for (var i in data!) {
+                    list.add(i.data()['displayName']);
+                    listImage.add(i.data()['photoUrl']);
+                  }
+                }
+                return ListView.builder(
+                    itemCount: 2,
+                    shrinkWrap: true,
+                    itemBuilder: (context, index) {
+                      return Card(
+                        color: Colors.white,
+                        elevation: 0.1,
+                        child: InkWell(
+                          onTap: () {},
+                          child: ListTile(
+                            leading: ClipRRect(
+                                borderRadius: BorderRadius.circular(50),
+                                child: SizedBox(
+                                  width: 50,
+                                  height: 50,
+                                  child: CachedNetworkImage(
+                                      fit: BoxFit.cover,
+                                      width:
+                                          MediaQuery.of(context).size.height *
+                                              .055,
+                                      height:
+                                          MediaQuery.of(context).size.height *
+                                              .055,
+                                      imageUrl: '${listImage[index]}',
+                                      errorWidget: (context, url, error) =>
+                                          const CircleAvatar(
+                                            child: Icon(CupertinoIcons.person),
+                                          )),
+                                )),
+                            title: Text('${list[index]}'),
+                          ),
+                        ),
+                      );
+                    });
+              })
+        ],
+      ),
+    ),
   );
 }
