@@ -5,14 +5,18 @@ import 'dart:io';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:chatapp/models/storage.dart';
+import 'package:chatapp/models/store.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:image_picker/image_picker.dart';
 import '../models/auth.dart';
+import '../models/userinfo.dart';
 
 class ProfileScreen extends StatefulWidget {
-  const ProfileScreen({super.key});
+  final UsersInfo user;
+
+  const ProfileScreen({super.key, required this.user});
 
   @override
   State<ProfileScreen> createState() => _ProfileScreenState();
@@ -24,42 +28,46 @@ class _ProfileScreenState extends State<ProfileScreen> {
   final image = Auth().getCurrentUSer()?.photoURL;
   var username = Auth().getCurrentUSer()?.displayName;
   var phone = '0326428199';
-
+  final _formKey = GlobalKey<FormState>();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text("Profile screen"),
       ),
-      body: Padding(
-        padding: EdgeInsets.symmetric(
-            horizontal: MediaQuery.of(context).size.width * .05),
-        child: SingleChildScrollView(
-            child: Column(
-          children: [
-            SizedBox(
-              height: 20,
-            ),
-            // Anh dai dien
-            _getImage(),
-            SizedBox(
-              height: 18,
-            ),
-            // Email
-            _emailInfo(),
-            SizedBox(
-              height: 18,
-            ),
-            // field name
-            _fieldNameInfo(),
-            SizedBox(
-              height: 18,
-            ),
-            // field phone
-            _fieldPhone(),
-            SizedBox(height: 12),
-          ],
-        )),
+      body: Form(
+        key: _formKey,
+        child: Padding(
+          padding: EdgeInsets.symmetric(
+              horizontal: MediaQuery.of(context).size.width * .05),
+          child: SingleChildScrollView(
+              child: Column(
+            children: [
+              SizedBox(
+                height: 20,
+              ),
+              // Anh dai dien
+              _getImage(),
+              SizedBox(
+                height: 18,
+              ),
+              // Email
+              _emailInfo(),
+              SizedBox(
+                height: 18,
+              ),
+              // field name
+              _fieldNameInfo(),
+              SizedBox(
+                height: 18,
+              ),
+              // field phone
+              _fieldPhone(),
+              SizedBox(height: 12),
+              _buttonUpdate(),
+            ],
+          )),
+        ),
       ),
     );
   }
@@ -85,7 +93,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     width: MediaQuery.of(context).size.height * .2,
                     height: MediaQuery.of(context).size.height * .2,
                     fit: BoxFit.cover,
-                    imageUrl: '$image',
+                    imageUrl: widget.user.photoURL,
                     errorWidget: (context, url, error) => const CircleAvatar(
                           child: Icon(CupertinoIcons.person),
                         )),
@@ -119,17 +127,19 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   Widget _fieldNameInfo() {
     return TextFormField(
-      initialValue: username,
-      onChanged: (value) {
-        username = Auth().getCurrentUSer()!.updateDisplayName(value) as String?;
-      },
-      onSaved: (value) => username = value ?? '',
+      initialValue: widget.user.displayName,
+      // onChanged: (value) {
+      //   username = Auth().getCurrentUSer()!.updateDisplayName(value) as String?;
+      // },
+      onSaved: (value) => Store.me.displayName = value ?? '',
+      validator: (value) =>
+          value != null && value.isNotEmpty ? null : 'Require Field',
       decoration: InputDecoration(
         prefixIcon: Icon(color: Colors.blue, Icons.person),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
         ),
-        hintText: 'eg: hihih',
+        hintText: 'eg: Kaye',
         label: Text('name'),
       ),
     );
@@ -137,7 +147,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   Widget _fieldPhone() {
     return TextFormField(
-      initialValue: phone,
+      initialValue: widget.user.phoneNumber,
+      onSaved: (value) => Store.me.phoneNumber = value ?? '',
+      validator: (value) =>
+          value != null && value.isNotEmpty ? null : 'Require Field',
       decoration: InputDecoration(
         prefixIcon: Icon(color: Colors.blue, Icons.info),
         border: OutlineInputBorder(
@@ -146,6 +159,26 @@ class _ProfileScreenState extends State<ProfileScreen> {
         hintText: '090290122121',
         label: Text('phone'),
       ),
+    );
+  }
+
+  Widget _buttonUpdate() {
+    return ElevatedButton.icon(
+      style: ElevatedButton.styleFrom(
+          shape: StadiumBorder(),
+          minimumSize: Size(MediaQuery.of(context).size.width * .5,
+              MediaQuery.of(context).size.height * .05)),
+      onPressed: () {
+        if (_formKey.currentState!.validate()) {
+          _formKey.currentState!.save();
+          Store.updateUserInfo().then((value) {});
+        }
+      },
+      icon: Icon(
+        Icons.edit,
+        size: 28,
+      ),
+      label: Text('Update', style: TextStyle(fontSize: 16)),
     );
   }
 
