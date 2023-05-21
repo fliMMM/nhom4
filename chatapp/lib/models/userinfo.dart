@@ -1,4 +1,16 @@
+import 'package:chatapp/models/auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+
 class UsersInfo {
+  CollectionReference<Map<String, dynamic>> userRef =
+      FirebaseFirestore.instance.collection("Users");
+  late String displayName;
+  late String email;
+  late String phoneNumber;
+  late String photoUrl;
+  late String uid;
+
   UsersInfo({
     required this.displayName,
     required this.email,
@@ -6,12 +18,8 @@ class UsersInfo {
     required this.photoUrl,
     required this.uid,
   });
-  late String displayName;
-  late String email;
-  late String phoneNumber;
-  late String photoUrl;
-  late String uid;
 
+  UsersInfo.test();
   UsersInfo.fromJson(Map<String, dynamic> json) {
     displayName = json['displayName'] ?? '';
     email = json['email'] ?? '';
@@ -28,5 +36,16 @@ class UsersInfo {
     data['photoUrl'] = photoUrl;
     data['uid'] = uid;
     return data;
+  }
+
+  Future<Map<String, dynamic>?> getPeer(String conversationId) async {
+    var userIds = conversationId.split("-");
+    var peerId =
+        userIds[0] == Auth().getCurrentUSer()?.uid ? userIds[1] : userIds[0];
+
+    DocumentSnapshot<Map<String, dynamic>> peerInfo =
+        await userRef.doc(peerId).get();
+
+    return peerInfo.data();
   }
 }
