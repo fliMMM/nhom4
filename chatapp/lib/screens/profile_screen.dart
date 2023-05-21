@@ -6,6 +6,7 @@ import 'dart:io';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:chatapp/models/storage.dart';
 import 'package:chatapp/models/store.dart';
+import 'package:chatapp/widgets/dialogs.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -164,7 +165,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
       onPressed: () {
         if (_formKey.currentState!.validate()) {
           _formKey.currentState!.save();
-          Store.updateUserInfo().then((value) {});
+          Store.updateUserInfo().then((value) {
+            Dialogs.showSnackbar(context, 'Cập nhật thành công');
+          });
         }
       },
       icon: Icon(
