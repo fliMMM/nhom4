@@ -82,7 +82,12 @@ class _ChatScreenState extends State<ChatScreen> {
       };
       FirebaseFirestore.instance.collection("messages").add(data).then((value) {
         print("send message success: " + value.toString());
+        FirebaseFirestore.instance
+            .collection("Conversations")
+            .doc(widget.conversationsId)
+            .update({"last_message": message});
       });
+
       setState(() {
         textInputController.clear();
         listScrollController.animateTo(

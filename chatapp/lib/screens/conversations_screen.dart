@@ -3,22 +3,13 @@ import 'dart:ui';
 import 'package:chatapp/models/auth.dart';
 import 'package:chatapp/models/store.dart';
 import 'package:chatapp/screens/chat_screen.dart';
+import 'package:chatapp/screens/profile_screen.dart';
 import 'package:chatapp/widgets/drawer.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import '../widgets/logo.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-
-final fakedata = [
-  {"sender": "hieu", "data": "Solo Aatrox khong?"},
-  {"sender": "back", "data": "thoi t so lam"},
-  {"sender": "hieu", "data": "tuong the nao"},
-  {"sender": "hieu", "data": "lan trc solo thua la do t nhuong m aatrox thoi"},
-  {"sender": "back", "data": "ghe vay sao"},
-  {"sender": "hieu", "data": "la ro, k ghe sao lai solo thang dc"},
-  {"sender": "back", "data": "m la nhat roi"},
-];
 
 List _userFilter = fakedata;
 
@@ -221,7 +212,7 @@ class _ConversationScreenState extends State<ConversationScreen> {
           ],
         ),
       ),
-      drawer: const MyDrawer(),
+      drawer: MyDrawer(),
     );
   }
 }
@@ -271,7 +262,7 @@ Widget addNewConversation({required BuildContext context}) {
                   }
                 }
                 return ListView.builder(
-                    itemCount: 2,
+                    itemCount: 3,
                     shrinkWrap: true,
                     itemBuilder: (context, index) {
                       return Card(
