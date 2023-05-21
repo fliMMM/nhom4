@@ -253,6 +253,15 @@ class _ConversationScreenState extends State<ConversationScreen> {
                         );
                       }
 
+                      if (snapshot.data!.docs.isEmpty) {
+                        return const Center(
+                          child: Text(
+                            "Bạn chưa có ai để chat cả :((",
+                            style: TextStyle(color: Colors.grey),
+                          ),
+                        );
+                      }
+
                       return ListView(
                         children: snapshot.data!.docs
                             .map((DocumentSnapshot document) {
@@ -286,7 +295,9 @@ class _ConversationScreenState extends State<ConversationScreen> {
                                               right: 15),
                                           child: UserLogo(
                                               size: 35,
-                                              imgUrl: peer["photoUrl"])),
+                                              imgUrl: peer["photoUrl"] != ""
+                                                  ? peer["photoUrl"]
+                                                  : "https://t4.ftcdn.net/jpg/00/97/58/97/360_F_97589769_t45CqXyzjz0KXwoBZT9PRaWGHRk5hQqQ.jpg")),
                                       Container(
                                         width:
                                             MediaQuery.of(context).size.width -
@@ -301,12 +312,21 @@ class _ConversationScreenState extends State<ConversationScreen> {
                                           mainAxisAlignment:
                                               MainAxisAlignment.spaceEvenly,
                                           children: [
-                                            Text(peer["displayName"],
+                                            Text(
+                                                peer["displayName"] != ""
+                                                    ? peer["displayName"]
+                                                    : peer["email"],
                                                 style: const TextStyle(
                                                     fontSize: 20,
                                                     fontWeight:
                                                         FontWeight.w600)),
-                                            Text(data["last_message"],
+                                            Text(
+                                                data["last_message"]
+                                                            ["message"] !=
+                                                        ""
+                                                    ? data["last_message"]
+                                                        ["message"]
+                                                    : "Hãy viết gì đó...",
                                                 overflow: TextOverflow.ellipsis,
                                                 style: const TextStyle(
                                                     fontSize: 17,
@@ -333,5 +353,3 @@ class _ConversationScreenState extends State<ConversationScreen> {
     );
   }
 }
-
-void _showBottomSheet() {}

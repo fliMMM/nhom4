@@ -1,4 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:chatapp/models/conversation.dart';
+import 'package:chatapp/screens/chat_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -14,6 +16,26 @@ class AddUser extends StatefulWidget {
 }
 
 class _AddUserState extends State<AddUser> {
+  addNewConverSation() async {
+    try {
+      String conversationId = await Conversation().addConversation(widget.user);
+
+      if (context.mounted) {
+        Navigator.of(context).pop();
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => ChatScreen(
+                      conversationsId: conversationId,
+                    )));
+      }
+    } on FirebaseException catch (e) {
+      print(e.message);
+    } catch (e) {
+      print(e);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Card(
@@ -22,6 +44,7 @@ class _AddUserState extends State<AddUser> {
       child: InkWell(
         onTap: () {},
         child: ListTile(
+          onTap: addNewConverSation,
           leading: ClipRRect(
               borderRadius: BorderRadius.circular(50),
               child: SizedBox(
@@ -36,7 +59,9 @@ class _AddUserState extends State<AddUser> {
                           child: Icon(CupertinoIcons.person),
                         )),
               )),
-          title: Text(widget.user.displayName),
+          title: Text(widget.user.displayName == ""
+              ? widget.user.email
+              : widget.user.displayName),
         ),
       ),
     );

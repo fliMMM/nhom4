@@ -27,9 +27,34 @@ class Store {
 
   //update user
   static Future<void> updateUserInfo() async {
+    String id = me.uid;
     await firestore
         .collection('Users')
         .doc(user.uid)
         .update({'displayName': me.displayName, 'phoneNumber': me.phoneNumber});
+
+    var test = {
+      "user_$id": {
+        "displayName": me.displayName,
+        "email": me.email,
+        "photoUrl": me.photoUrl
+      }
+    };
+    FirebaseFirestore.instance
+        .collection("Conversations")
+        .where("userIds", arrayContains: id)
+        .get()
+        .then((respon) {
+      var batch = FirebaseFirestore.instance.batch();
+
+      for (var doc in respon.docs) {
+        var docRef =
+            FirebaseFirestore.instance.collection("Conversations").doc(doc.id);
+        batch.update(docRef, test);
+      }
+      batch.commit().then((value) {
+        print("Update success");
+      });
+    });
   }
 }
