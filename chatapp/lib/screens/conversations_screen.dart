@@ -181,6 +181,7 @@ class _ConversationScreenState extends State<ConversationScreen> {
                                       width: MediaQuery.of(context).size.width -
                                           100,
                                       height: 70,
+                                      padding: const EdgeInsets.only(right: 100),
                                       color: Colors.transparent,
                                       child: Column(
                                         crossAxisAlignment:
@@ -193,6 +194,7 @@ class _ConversationScreenState extends State<ConversationScreen> {
                                                   fontSize: 20,
                                                   fontWeight: FontWeight.w600)),
                                           Text(data["last_message"],
+                                              overflow: TextOverflow.ellipsis,
                                               style: const TextStyle(
                                                   fontSize: 17,
                                                   fontWeight: FontWeight.w400))
@@ -254,6 +256,7 @@ Widget addNewConversation({required BuildContext context}) {
               builder: (context, snapshot) {
                 final list = [];
                 final listImage = [];
+
                 if (snapshot.hasData) {
                   final data = snapshot.data?.docs;
                   for (var i in data!) {

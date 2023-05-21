@@ -91,7 +91,7 @@ class _ChatScreenState extends State<ChatScreen> {
       setState(() {
         textInputController.clear();
         listScrollController.animateTo(
-            listScrollController.position.maxScrollExtent + 70,
+            listScrollController.position.minScrollExtent,
             duration: const Duration(microseconds: 500),
             curve: Curves.easeOut);
         textInputController.text = "";
