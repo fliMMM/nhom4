@@ -6,6 +6,7 @@ import 'dart:io';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:chatapp/models/storage.dart';
 import 'package:chatapp/models/store.dart';
+import 'package:chatapp/widgets/dialogs.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -24,10 +25,6 @@ class ProfileScreen extends StatefulWidget {
 
 class _ProfileScreenState extends State<ProfileScreen> {
   String? _image;
-  final userEmail = Auth().getCurrentUSer()?.email;
-  final image = Auth().getCurrentUSer()?.photoURL;
-  var username = Auth().getCurrentUSer()?.displayName;
-  var phone = '0326428199';
   final _formKey = GlobalKey<FormState>();
   @override
   Widget build(BuildContext context) {
@@ -93,7 +90,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     width: MediaQuery.of(context).size.height * .2,
                     height: MediaQuery.of(context).size.height * .2,
                     fit: BoxFit.cover,
-                    imageUrl: widget.user.photoURL,
+                    imageUrl: widget.user.photoUrl,
                     errorWidget: (context, url, error) => const CircleAvatar(
                           child: Icon(CupertinoIcons.person),
                         )),
@@ -120,7 +117,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   Widget _emailInfo() {
     return Text(
-      '$userEmail',
+      '${widget.user.email}',
       style: const TextStyle(color: Colors.black54, fontSize: 16),
     );
   }
@@ -128,9 +125,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
   Widget _fieldNameInfo() {
     return TextFormField(
       initialValue: widget.user.displayName,
-      // onChanged: (value) {
-      //   username = Auth().getCurrentUSer()!.updateDisplayName(value) as String?;
-      // },
       onSaved: (value) => Store.me.displayName = value ?? '',
       validator: (value) =>
           value != null && value.isNotEmpty ? null : 'Require Field',
@@ -171,7 +165,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
       onPressed: () {
         if (_formKey.currentState!.validate()) {
           _formKey.currentState!.save();
-          Store.updateUserInfo().then((value) {});
+          Store.updateUserInfo().then((value) {
+            Dialogs.showSnackbar(context, 'Cập nhật thành công');
+          });
         }
       },
       icon: Icon(

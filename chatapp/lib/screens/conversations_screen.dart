@@ -1,12 +1,17 @@
+import 'dart:developer';
 import 'dart:ui';
 
 import 'package:chatapp/models/auth.dart';
 import 'package:chatapp/models/store.dart';
 import 'package:chatapp/screens/chat_screen.dart';
+import 'package:chatapp/screens/profile_screen.dart';
+import 'package:chatapp/widgets/cardadduser.dart';
 import 'package:chatapp/widgets/drawer.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import '../models/userinfo.dart';
 import '../widgets/logo.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
@@ -20,17 +25,19 @@ class ConversationScreen extends StatefulWidget {
 }
 
 class _ConversationScreenState extends State<ConversationScreen> {
+  void initState() {
+    super.initState();
+    Store.getSelfInfo();
+  }
+
+  bool check_search = false;
+  List<UsersInfo> list = [];
+  List<UsersInfo> searchList = [];
   var currentUserId = Auth().getCurrentUSer()?.toString();
   final Stream<QuerySnapshot> conversationStream = FirebaseFirestore.instance
       .collection("Conversations")
       .where("userIds", arrayContains: Auth().getCurrentUSer()?.uid.toString())
       .snapshots();
-
-  @override
-  void initState() {
-    super.initState();
-    Store.getSelfInfo();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -75,13 +82,113 @@ class _ConversationScreenState extends State<ConversationScreen> {
           Builder(builder: (context) {
             return IconButton(
               onPressed: () {
+                check_search = false;
                 // Scaffold.of(context).openEndDrawer();
                 showModalBottomSheet(
                     isScrollControlled: true,
                     isDismissible: true,
                     context: context,
                     builder: (BuildContext context) {
-                      return addNewConversation(context: context);
+                      return StatefulBuilder(builder:
+                          (BuildContext context, StateSetter setState) {
+                        return Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: SizedBox(
+                            width: double.infinity,
+                            height: MediaQuery.of(context).size.height - 100,
+                            child: Column(
+                              children: [
+                                const Center(
+                                    child: Text(
+                                  "Tin nhắn mới",
+                                  style: TextStyle(
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.w400),
+                                )),
+                                TextField(
+                                  autofocus: true,
+                                  decoration: InputDecoration(
+                                      labelText: 'Đến:',
+                                      labelStyle: TextStyle(
+                                          color: Colors.black, fontSize: 15)),
+                                  onChanged: (val) {
+                                    print(val);
+                                    check_search = true;
+                                    searchList.clear();
+                                    for (var i in list) {
+                                      if (i.displayName
+                                              .toLowerCase()
+                                              .contains(val.toLowerCase()) ||
+                                          i.email
+                                              .toLowerCase()
+                                              .contains(val.toLowerCase())) {
+                                        searchList.add(i);
+                                      }
+                                      if (val == '') {
+                                        check_search = false;
+                                      }
+                                      ;
+                                      setState(() {
+                                        searchList;
+                                      });
+                                    }
+                                  },
+                                ),
+                                const SizedBox(
+                                  height: 10,
+                                ),
+                                ListTile(
+                                    leading: const Icon(Icons.account_tree),
+                                    title: const Text(
+                                      'Tạo nhóm mới',
+                                      style: TextStyle(fontSize: 16),
+                                    ),
+                                    onTap: () => print('Tạo nhóm')),
+                                const SizedBox(
+                                  height: 10,
+                                ),
+                                StreamBuilder(
+                                    stream: Store.firestore
+                                        .collection('Users')
+                                        .snapshots(),
+                                    builder: (context, snapshot) {
+                                      switch (snapshot.connectionState) {
+                                        // if data is loading
+                                        case ConnectionState.waiting:
+                                        case ConnectionState.none:
+                                          return const Center(
+                                              child:
+                                                  CircularProgressIndicator());
+                                        // if some or all data is loaded then show it
+                                        case ConnectionState.active:
+                                        case ConnectionState.done:
+                                          final data = snapshot.data?.docs;
+                                          list = data
+                                                  ?.map((e) =>
+                                                      UsersInfo.fromJson(
+                                                          e.data()))
+                                                  .toList() ??
+                                              [];
+                                          return ListView.builder(
+                                              itemCount: check_search
+                                                  ? searchList.length
+                                                  : list.length,
+                                              physics:
+                                                  const BouncingScrollPhysics(),
+                                              shrinkWrap: true,
+                                              itemBuilder: (context, index) {
+                                                return AddUser(
+                                                    user: check_search
+                                                        ? searchList[index]
+                                                        : list[index]);
+                                              });
+                                      }
+                                    })
+                              ],
+                            ),
+                          ),
+                        );
+                      });
                     });
               },
               icon: const Icon(Icons.add_comment_outlined),
@@ -181,7 +288,8 @@ class _ConversationScreenState extends State<ConversationScreen> {
                                       width: MediaQuery.of(context).size.width -
                                           100,
                                       height: 70,
-                                      padding: const EdgeInsets.only(right: 100),
+                                      padding:
+                                          const EdgeInsets.only(right: 100),
                                       color: Colors.transparent,
                                       child: Column(
                                         crossAxisAlignment:
@@ -219,88 +327,4 @@ class _ConversationScreenState extends State<ConversationScreen> {
   }
 }
 
-Widget addNewConversation({required BuildContext context}) {
-  return Padding(
-    padding: const EdgeInsets.all(8.0),
-    child: SizedBox(
-      width: double.infinity,
-      height: MediaQuery.of(context).size.height - 100,
-      child: Column(
-        children: [
-          const Center(
-              child: Text(
-            "Tin nhắn mới",
-            style: TextStyle(fontSize: 18, fontWeight: FontWeight.w400),
-          )),
-          const TextField(
-            keyboardType: TextInputType.text,
-            decoration: InputDecoration(
-                labelText: 'Đến:',
-                labelStyle: TextStyle(color: Colors.black, fontSize: 15)),
-          ),
-          const SizedBox(
-            height: 10,
-          ),
-          ListTile(
-              leading: const Icon(Icons.account_tree),
-              title: const Text(
-                'Tạo nhóm mới',
-                style: TextStyle(fontSize: 16),
-              ),
-              onTap: () => print('Tạo nhóm')),
-          const SizedBox(
-            height: 10,
-          ),
-          StreamBuilder(
-              stream: Store.firestore.collection('Users').snapshots(),
-              builder: (context, snapshot) {
-                final list = [];
-                final listImage = [];
-
-                if (snapshot.hasData) {
-                  final data = snapshot.data?.docs;
-                  for (var i in data!) {
-                    list.add(i.data()['displayName']);
-                    listImage.add(i.data()['photoUrl']);
-                  }
-                }
-                return ListView.builder(
-                    itemCount: 3,
-                    shrinkWrap: true,
-                    itemBuilder: (context, index) {
-                      return Card(
-                        color: Colors.white,
-                        elevation: 0.1,
-                        child: InkWell(
-                          onTap: () {},
-                          child: ListTile(
-                            leading: ClipRRect(
-                                borderRadius: BorderRadius.circular(50),
-                                child: SizedBox(
-                                  width: 50,
-                                  height: 50,
-                                  child: CachedNetworkImage(
-                                      fit: BoxFit.cover,
-                                      width:
-                                          MediaQuery.of(context).size.height *
-                                              .055,
-                                      height:
-                                          MediaQuery.of(context).size.height *
-                                              .055,
-                                      imageUrl: '${listImage[index]}',
-                                      errorWidget: (context, url, error) =>
-                                          const CircleAvatar(
-                                            child: Icon(CupertinoIcons.person),
-                                          )),
-                                )),
-                            title: Text('${list[index]}'),
-                          ),
-                        ),
-                      );
-                    });
-              })
-        ],
-      ),
-    ),
-  );
-}
+void _showBottomSheet() {}
