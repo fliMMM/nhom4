@@ -267,10 +267,14 @@ class _ConversationScreenState extends State<ConversationScreen> {
                             .map((DocumentSnapshot document) {
                               Map<String, dynamic> data =
                                   document.data()! as Map<String, dynamic>;
-
-                              var peerId = data["userIds"][0] == currentUserId
-                                  ? data["userIds"][1]
-                                  : data["userIds"][0];
+                              var peerId;
+                              var userIds = data["id"].split("-");
+                              print(data["id"].split("-"));
+                              if (userIds[0] == Store.me.uid) {
+                                peerId = userIds[1];
+                              } else {
+                                peerId = userIds[0];
+                              }
                               var peer = data["user_$peerId"];
 
                               return Card(

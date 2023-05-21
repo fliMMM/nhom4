@@ -1,6 +1,4 @@
 import 'dart:developer';
-
-import 'package:chatapp/models/auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import '../models/userinfo.dart';
@@ -33,7 +31,7 @@ class Store {
         .doc(user.uid)
         .update({'displayName': me.displayName, 'phoneNumber': me.phoneNumber});
 
-    var test = {
+    var updateData = {
       "user_$id": {
         "displayName": me.displayName,
         "email": me.email,
@@ -50,7 +48,7 @@ class Store {
       for (var doc in respon.docs) {
         var docRef =
             FirebaseFirestore.instance.collection("Conversations").doc(doc.id);
-        batch.update(docRef, test);
+        batch.update(docRef, updateData);
       }
       batch.commit().then((value) {
         print("Update success");

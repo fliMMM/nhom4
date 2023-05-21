@@ -162,10 +162,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
   Widget _buttonUpdate() {
     return ElevatedButton.icon(
       style: ElevatedButton.styleFrom(
-          shape: StadiumBorder(),
+          shape: const StadiumBorder(),
           minimumSize: Size(MediaQuery.of(context).size.width * .5,
               MediaQuery.of(context).size.height * .05)),
       onPressed: () {
+        FocusManager.instance.primaryFocus?.unfocus();
         if (_formKey.currentState!.validate()) {
           _formKey.currentState!.save();
           Store.updateUserInfo().then((value) {
