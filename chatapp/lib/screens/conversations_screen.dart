@@ -19,15 +19,20 @@ class ConversationScreen extends StatefulWidget {
 }
 
 class _ConversationScreenState extends State<ConversationScreen> {
-  void initState() {
-    super.initState();
-    Store.getSelfInfo();
-  }
-
+  late Stream<QuerySnapshot> conversationStream;
   bool check_search = false;
   List<UsersInfo> list = [];
   List<UsersInfo> searchList = [];
   var currentUserId = Auth().getCurrentUSer()?.toString();
+  late Stream<QuerySnapshot> userStream;
+
+  @override
+  void initState() {
+    super.initState();
+    Store.getSelfInfo();
+    conversationStream = Conversation().getConversationStream();
+    userStream = Store.firestore.collection('Users').snapshots();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -146,9 +151,7 @@ class _ConversationScreenState extends State<ConversationScreen> {
                                     height: 10,
                                   ),
                                   StreamBuilder(
-                                      stream: Store.firestore
-                                          .collection('Users')
-                                          .snapshots(),
+                                      stream: userStream,
                                       builder: (context, snapshot) {
                                         switch (snapshot.connectionState) {
                                           // if data is loading
@@ -164,7 +167,9 @@ class _ConversationScreenState extends State<ConversationScreen> {
                                             list = data
                                                     ?.map((e) =>
                                                         UsersInfo.fromJson(
-                                                            e.data()))
+                                                            e.data() as Map<
+                                                                String,
+                                                                dynamic>))
                                                     .toList() ??
                                                 [];
                                             return ListView.builder(
@@ -236,7 +241,7 @@ class _ConversationScreenState extends State<ConversationScreen> {
                   )),
               Expanded(
                 child: StreamBuilder<QuerySnapshot>(
-                    stream: Conversation().getConversationStream(),
+                    stream: conversationStream,
                     builder: (BuildContext context,
                         AsyncSnapshot<QuerySnapshot> snapshot) {
                       if (snapshot.hasError) {

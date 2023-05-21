@@ -23,11 +23,13 @@ class _ChatScreenState extends State<ChatScreen> {
   List listMessage = [];
   var currentUserId = Auth().getCurrentUSer()?.uid;
   var peerInfo;
+  late Stream<QuerySnapshot> messageStream;
 
   @override
   void initState() {
     super.initState();
     listScrollController.addListener(_scroolListener);
+    messageStream = MessageModel().getMessageStream(widget.conversationsId);
     peerInfo = UsersInfo.test().getPeer(widget.conversationsId);
   }
 
@@ -75,8 +77,7 @@ class _ChatScreenState extends State<ChatScreen> {
               child: Stack(
                 children: [
                   StreamBuilder<QuerySnapshot>(
-                      stream: MessageModel()
-                          .getMessageStream(widget.conversationsId),
+                      stream: messageStream,
                       builder: (BuildContext context,
                           AsyncSnapshot<QuerySnapshot> snapshot) {
                         if (snapshot.hasError) {
