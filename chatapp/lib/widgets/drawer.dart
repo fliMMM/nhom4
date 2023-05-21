@@ -7,7 +7,6 @@ import 'package:flutter/material.dart';
 import '../screens/profile_screen.dart';
 
 class MyDrawer extends StatelessWidget {
-  get image => Auth().getCurrentUSer()?.photoURL;
   const MyDrawer({super.key});
 
   @override
@@ -24,7 +23,7 @@ class MyDrawer extends StatelessWidget {
               borderRadius: BorderRadius.circular(100),
               child: CachedNetworkImage(
                   fit: BoxFit.cover,
-                  imageUrl: Store.me.photoURL,
+                  imageUrl: Store.me.photoUrl,
                   errorWidget: (context, url, error) => const CircleAvatar(
                         child: Icon(CupertinoIcons.person),
                       )),

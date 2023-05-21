@@ -29,10 +29,10 @@ class Storage {
     //updating image
     // var image = await ref.getDownloadURL();
     // user.updatePhotoURL(image);
-    Store.me.photoURL = await ref.getDownloadURL();
+    Store.me.photoUrl = await ref.getDownloadURL();
     await firestore
         .collection('Users')
         .doc(user.uid)
-        .update({'photoUrl': Store.me.photoURL});
+        .update({'photoUrl': Store.me.photoUrl});
   }
 }

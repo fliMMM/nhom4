@@ -1,6 +1,6 @@
 import 'package:chatapp/models/auth.dart';
 import 'package:chatapp/utils/validator.dart';
-import 'package:chatapp/widgets/MyInput.dart';
+import 'package:chatapp/widgets/AuthInput.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -96,67 +96,72 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        resizeToAvoidBottomInset: false,
-        body: Padding(
-            padding:
-                const EdgeInsets.only(top: 70, left: 20, bottom: 20, right: 20),
-            child: Column(children: [
-              Padding(
-                padding: const EdgeInsets.only(bottom: 40),
-                child: SizedBox(
-                  width: 100,
-                  height: 100,
-                  child: Image.asset("assets/images/message-icon.png"),
+    return GestureDetector(
+      onTap: () {
+        FocusScope.of(context).unfocus();
+      },
+      child: Scaffold(
+          resizeToAvoidBottomInset: false,
+          body: Padding(
+              padding: const EdgeInsets.only(
+                  top: 70, left: 20, bottom: 20, right: 20),
+              child: Column(children: [
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 40),
+                  child: SizedBox(
+                    width: 100,
+                    height: 100,
+                    child: Image.asset("assets/images/iconchat.png"),
+                  ),
                 ),
-              ),
-              SizedBox(
-                  height: 340,
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    children: [
-                      MyInput(
-                          label: "Email",
-                          textEditingController: emailController),
-                      MyInput(
-                          label: "Mật khẩu",
-                          textEditingController: passwordController),
-                      MyInput(
-                          label: "Xác nhận mật khẩu",
-                          textEditingController: confirmPasswordController),
-                      SizedBox(
-                          width: double.infinity,
-                          child: OutlinedButton(
-                            style: ButtonStyle(
-                                backgroundColor: isLoading == true
-                                    ? MaterialStateProperty.all(Colors.grey)
-                                    : MaterialStateProperty.all(
-                                        const Color.fromRGBO(0, 100, 224, 1)),
-                                shape: MaterialStateProperty.all(
-                                    RoundedRectangleBorder(
-                                        borderRadius:
-                                            BorderRadius.circular(20)))),
-                            onPressed: isLoading == false ? register : null,
-                            child: isLoading == false
-                                ? const Text(
-                                    "Đăng ký",
-                                    style: TextStyle(color: Colors.white),
-                                  )
-                                : const SizedBox(
-                                    width: 20,
-                                    height: 20,
-                                    child: CircularProgressIndicator(
-                                      color: Colors.white,
+                SizedBox(
+                    height: 340,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      children: [
+                        AuthInput(
+                            label: "Email",
+                            textEditingController: emailController),
+                        AuthInput(
+                            label: "Mật khẩu",
+                            textEditingController: passwordController),
+                        AuthInput(
+                            label: "Xác nhận mật khẩu",
+                            textEditingController: confirmPasswordController),
+                        SizedBox(
+                            width: double.infinity,
+                            child: OutlinedButton(
+                              style: ButtonStyle(
+                                  backgroundColor: isLoading == true
+                                      ? MaterialStateProperty.all(Colors.grey)
+                                      : MaterialStateProperty.all(
+                                          const Color.fromRGBO(0, 100, 224, 1)),
+                                  shape: MaterialStateProperty.all(
+                                      RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(20)))),
+                              onPressed: isLoading == false ? register : null,
+                              child: isLoading == false
+                                  ? const Text(
+                                      "Đăng ký",
+                                      style: TextStyle(color: Colors.white),
+                                    )
+                                  : const SizedBox(
+                                      width: 20,
+                                      height: 20,
+                                      child: CircularProgressIndicator(
+                                        color: Colors.white,
+                                      ),
                                     ),
-                                  ),
-                          )),
-                      TextButton(
-                          onPressed: () {
-                            widget.gotoLoginScreen();
-                          },
-                          child: const Text("Đăng nhập"))
-                    ],
-                  )),
-            ])));
+                            )),
+                        TextButton(
+                            onPressed: () {
+                              widget.gotoLoginScreen();
+                            },
+                            child: const Text("Đăng nhập"))
+                      ],
+                    )),
+              ]))),
+    );
   }
 }

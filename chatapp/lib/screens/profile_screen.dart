@@ -6,11 +6,10 @@ import 'dart:io';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:chatapp/models/storage.dart';
 import 'package:chatapp/models/store.dart';
+import 'package:chatapp/widgets/dialogs.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:image_picker/image_picker.dart';
-import '../models/auth.dart';
 import '../models/userinfo.dart';
 
 class ProfileScreen extends StatefulWidget {
@@ -24,49 +23,50 @@ class ProfileScreen extends StatefulWidget {
 
 class _ProfileScreenState extends State<ProfileScreen> {
   String? _image;
-  final userEmail = Auth().getCurrentUSer()?.email;
-  final image = Auth().getCurrentUSer()?.photoURL;
-  var username = Auth().getCurrentUSer()?.displayName;
-  var phone = '0326428199';
   final _formKey = GlobalKey<FormState>();
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text("Profile screen"),
-      ),
-      body: Form(
-        key: _formKey,
-        child: Padding(
-          padding: EdgeInsets.symmetric(
-              horizontal: MediaQuery.of(context).size.width * .05),
-          child: SingleChildScrollView(
-              child: Column(
-            children: [
-              const SizedBox(
-                height: 20,
-              ),
-              // Anh dai dien
-              _getImage(),
-              const SizedBox(
-                height: 18,
-              ),
-              // Email
-              _emailInfo(),
-              const SizedBox(
-                height: 18,
-              ),
-              // field name
-              _fieldNameInfo(),
-              const SizedBox(
-                height: 18,
-              ),
-              // field phone
-              _fieldPhone(),
-              const SizedBox(height: 12),
-              _buttonUpdate(),
-            ],
-          )),
+    return GestureDetector(
+      onTap: () {
+        FocusScope.of(context).unfocus();
+      },
+      child: Scaffold(
+        appBar: AppBar(
+          title: const Text("Profile screen"),
+        ),
+        body: Form(
+          key: _formKey,
+          child: Padding(
+            padding: EdgeInsets.symmetric(
+                horizontal: MediaQuery.of(context).size.width * .05),
+            child: SingleChildScrollView(
+                child: Column(
+              children: [
+                const SizedBox(
+                  height: 20,
+                ),
+                // Anh dai dien
+                _getImage(),
+                const SizedBox(
+                  height: 18,
+                ),
+                // Email
+                _emailInfo(),
+                const SizedBox(
+                  height: 18,
+                ),
+                // field name
+                _fieldNameInfo(),
+                const SizedBox(
+                  height: 18,
+                ),
+                // field phone
+                _fieldPhone(),
+                const SizedBox(height: 12),
+                _buttonUpdate(),
+              ],
+            )),
+          ),
         ),
       ),
     );
@@ -93,7 +93,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     width: MediaQuery.of(context).size.height * .2,
                     height: MediaQuery.of(context).size.height * .2,
                     fit: BoxFit.cover,
-                    imageUrl: widget.user.photoURL,
+                    imageUrl: widget.user.photoUrl,
                     errorWidget: (context, url, error) => const CircleAvatar(
                           child: Icon(CupertinoIcons.person),
                         )),
@@ -120,7 +120,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   Widget _emailInfo() {
     return Text(
-      '$userEmail',
+      widget.user.email,
       style: const TextStyle(color: Colors.black54, fontSize: 16),
     );
   }
@@ -128,19 +128,16 @@ class _ProfileScreenState extends State<ProfileScreen> {
   Widget _fieldNameInfo() {
     return TextFormField(
       initialValue: widget.user.displayName,
-      // onChanged: (value) {
-      //   username = Auth().getCurrentUSer()!.updateDisplayName(value) as String?;
-      // },
       onSaved: (value) => Store.me.displayName = value ?? '',
       validator: (value) =>
           value != null && value.isNotEmpty ? null : 'Require Field',
       decoration: InputDecoration(
-        prefixIcon: Icon(color: Colors.blue, Icons.person),
+        prefixIcon: const Icon(color: Colors.blue, Icons.person),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
         ),
         hintText: 'eg: Kaye',
-        label: Text('name'),
+        label: const Text('name'),
       ),
     );
   }
@@ -152,12 +149,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
       validator: (value) =>
           value != null && value.isNotEmpty ? null : 'Require Field',
       decoration: InputDecoration(
-        prefixIcon: Icon(color: Colors.blue, Icons.info),
+        prefixIcon: const Icon(color: Colors.blue, Icons.info),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
         ),
         hintText: '090290122121',
-        label: Text('phone'),
+        label: const Text('phone'),
       ),
     );
   }
@@ -171,14 +168,16 @@ class _ProfileScreenState extends State<ProfileScreen> {
       onPressed: () {
         if (_formKey.currentState!.validate()) {
           _formKey.currentState!.save();
-          Store.updateUserInfo().then((value) {});
+          Store.updateUserInfo().then((value) {
+            Dialogs.showSnackbar(context, 'Cập nhật thành công');
+          });
         }
       },
-      icon: Icon(
+      icon: const Icon(
         Icons.edit,
         size: 28,
       ),
-      label: Text('Update', style: TextStyle(fontSize: 16)),
+      label: const Text('Update', style: TextStyle(fontSize: 16)),
     );
   }
 
@@ -200,7 +199,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 textAlign: TextAlign.center,
                 style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
               ),
-              SizedBox(
+              const SizedBox(
                 height: 15,
               ),
               Row(
