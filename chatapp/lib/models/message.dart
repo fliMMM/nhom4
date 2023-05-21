@@ -23,15 +23,17 @@ class MessageModel {
         "text": text,
         "timestamp": DateTime.now().microsecondsSinceEpoch
       };
-      await FirebaseFirestore.instance
-          .collection("messages")
-          .add(data)
-          .then((value) {
+      await messageRef.add(data).then((value) {
         print("send message success: $value");
         FirebaseFirestore.instance
             .collection("Conversations")
             .doc(conversationId)
-            .update({"last_message": text});
+            .update({
+          "last_message": {
+            "senderId": Auth().getCurrentUSer()?.uid,
+            "message": text,
+          }
+        });
       });
     }
   }
