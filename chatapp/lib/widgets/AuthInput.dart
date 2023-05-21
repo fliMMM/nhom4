@@ -1,20 +1,16 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/framework.dart';
-import 'package:flutter/src/widgets/placeholder.dart';
 
-class MyInput extends StatefulWidget {
+class AuthInput extends StatefulWidget {
   String label;
   TextEditingController textEditingController;
-  MyInput(
+  AuthInput(
       {super.key, required this.label, required this.textEditingController});
 
   @override
-  State<MyInput> createState() => _MyInputState();
+  State<AuthInput> createState() => _AuthInputState();
 }
 
-class _MyInputState extends State<MyInput> {
+class _AuthInputState extends State<AuthInput> {
   bool obscureText = true;
 
   @override

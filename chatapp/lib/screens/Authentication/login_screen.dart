@@ -1,6 +1,6 @@
 import 'package:chatapp/models/auth.dart';
 import 'package:chatapp/utils/validator.dart';
-import 'package:chatapp/widgets/MyInput.dart';
+import 'package:chatapp/widgets/AuthInput.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
@@ -100,11 +100,11 @@ class _LoginScreenState extends State<LoginScreen> {
                             child: Column(
                               mainAxisAlignment: MainAxisAlignment.spaceAround,
                               children: [
-                                MyInput(
+                                AuthInput(
                                   label: "Email",
                                   textEditingController: emailController,
                                 ),
-                                MyInput(
+                                AuthInput(
                                     label: "Mật khẩu",
                                     textEditingController: passwordController),
                                 SizedBox(
