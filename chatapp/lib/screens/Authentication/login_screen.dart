@@ -73,83 +73,87 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        resizeToAvoidBottomInset: false,
-        body: Padding(
-            padding:
-                const EdgeInsets.only(top: 70, left: 20, bottom: 20, right: 20),
-            child: Column(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  SizedBox(
-                    width: 100,
-                    height: 100,
-                    child: Image.asset("assets/images/iconchat.png"),
-                  ),
-                  SizedBox(
-                      height: 250,
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
-                        children: [
-                          MyInput(
-                            label: "Email",
-                            textEditingController: emailController,
-                          ),
-                          MyInput(
-                              label: "Mật khẩu",
-                              textEditingController: passwordController),
-                          SizedBox(
-                              width: double.infinity,
-                              child: OutlinedButton(
-                                style: ButtonStyle(
-                                    backgroundColor: isLoading == true
-                                        ? MaterialStateProperty.all(Colors.grey)
-                                        : MaterialStateProperty.all(
-                                            const Color.fromRGBO(
-                                                0, 100, 224, 1)),
-                                    shape: MaterialStateProperty.all(
-                                        RoundedRectangleBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(20)))),
-                                onPressed: isLoading == false ? login : null,
-                                child: isLoading == false
-                                    ? const Text(
-                                        "Đăng nhập",
-                                        style: TextStyle(color: Colors.white),
-                                      )
-                                    : const SizedBox(
-                                        width: 20,
-                                        height: 20,
-                                        child: CircularProgressIndicator(
-                                          color: Colors.white,
+    return GestureDetector(
+      onTap: () => FocusScope.of(context).unfocus(),
+      child: Scaffold(
+          resizeToAvoidBottomInset: false,
+          body: Padding(
+              padding: const EdgeInsets.only(
+                  top: 70, left: 20, bottom: 20, right: 20),
+              child: Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    SizedBox(
+                      width: 100,
+                      height: 100,
+                      child: Image.asset("assets/images/iconchat.png"),
+                    ),
+                    SizedBox(
+                        height: 250,
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          children: [
+                            MyInput(
+                              label: "Email",
+                              textEditingController: emailController,
+                            ),
+                            MyInput(
+                                label: "Mật khẩu",
+                                textEditingController: passwordController),
+                            SizedBox(
+                                width: double.infinity,
+                                child: OutlinedButton(
+                                  style: ButtonStyle(
+                                      backgroundColor: isLoading == true
+                                          ? MaterialStateProperty.all(
+                                              Colors.grey)
+                                          : MaterialStateProperty.all(
+                                              const Color.fromRGBO(
+                                                  0, 100, 224, 1)),
+                                      shape: MaterialStateProperty.all(
+                                          RoundedRectangleBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(20)))),
+                                  onPressed: isLoading == false ? login : null,
+                                  child: isLoading == false
+                                      ? const Text(
+                                          "Đăng nhập",
+                                          style: TextStyle(color: Colors.white),
+                                        )
+                                      : const SizedBox(
+                                          width: 20,
+                                          height: 20,
+                                          child: CircularProgressIndicator(
+                                            color: Colors.white,
+                                          ),
                                         ),
-                                      ),
-                              )),
-                          SizedBox(
-                            width: double.infinity,
-                            child: TextButton(
-                                onPressed: () {
-                                  print("Quên mật khẩu");
-                                },
-                                child: const Text("Quên mật khẩu?")),
-                          ),
-                        ],
-                      )),
-                  SizedBox(
-                      height: 40,
-                      width: double.infinity,
-                      child: OutlinedButton(
-                          style: ButtonStyle(
-                              backgroundColor:
-                                  MaterialStateProperty.all(Colors.white),
-                              shape: MaterialStateProperty.all(
-                                  RoundedRectangleBorder(
-                                      borderRadius:
-                                          BorderRadius.circular(20)))),
-                          child: const Text("Tạo tài khoản mới"),
-                          onPressed: () {
-                            widget.gotoRegisterScreen();
-                          }))
-                ])));
+                                )),
+                            SizedBox(
+                              width: double.infinity,
+                              child: TextButton(
+                                  onPressed: () {
+                                    print("Quên mật khẩu");
+                                  },
+                                  child: const Text("Quên mật khẩu?")),
+                            ),
+                          ],
+                        )),
+                    SizedBox(
+                        height: 40,
+                        width: double.infinity,
+                        child: OutlinedButton(
+                            style: ButtonStyle(
+                                backgroundColor:
+                                    MaterialStateProperty.all(Colors.white),
+                                shape: MaterialStateProperty.all(
+                                    RoundedRectangleBorder(
+                                        borderRadius:
+                                            BorderRadius.circular(20)))),
+                            child: const Text("Tạo tài khoản mới"),
+                            onPressed: () {
+                              widget.gotoRegisterScreen();
+                            }))
+                  ]))),
+    );
   }
 }
