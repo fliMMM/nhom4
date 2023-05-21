@@ -74,78 +74,97 @@ class _ChatScreenState extends State<ChatScreen> {
               height: MediaQuery.of(context).size.height,
               width: MediaQuery.of(context).size.width,
               color: Colors.grey[100],
-              child: Stack(
+              child: Column(
                 children: [
-                  StreamBuilder<QuerySnapshot>(
-                      stream: messageStream,
-                      builder: (BuildContext context,
-                          AsyncSnapshot<QuerySnapshot> snapshot) {
-                        if (snapshot.hasError) {
-                          return const Text('Something went wrong');
-                        }
-                        if (snapshot.connectionState ==
-                            ConnectionState.waiting) {
-                          return const Center(
-                            child:
-                                CircularProgressIndicator(color: Colors.blue),
-                          );
-                        }
+                  Expanded(
+                      flex: 1,
+                      child: StreamBuilder<QuerySnapshot>(
+                          stream: messageStream,
+                          builder: (BuildContext context,
+                              AsyncSnapshot<QuerySnapshot> snapshot) {
+                            if (snapshot.hasError) {
+                              return const Text('Something went wrong');
+                            }
+                            if (snapshot.connectionState ==
+                                ConnectionState.waiting) {
+                              return const Center(
+                                child: CircularProgressIndicator(
+                                    color: Colors.blue),
+                              );
+                            }
 
-                        if (snapshot.data!.docs.isEmpty) {
-                          return const Center(
-                            child: Text(
-                              "Hãy chat gì đó",
-                              style: TextStyle(color: Colors.grey),
-                            ),
-                          );
-                        }
+                            if (snapshot.data!.docs.isEmpty) {
+                              return const Center(
+                                child: Text(
+                                  "Hãy chat gì đó",
+                                  style: TextStyle(color: Colors.grey),
+                                ),
+                              );
+                            }
 
-                        return ListView(
-                          padding: const EdgeInsets.only(bottom: 60),
-                          controller: listScrollController,
-                          reverse: true,
-                          children: snapshot.data!.docs.reversed
-                              .map((DocumentSnapshot document) {
-                                Map<String, dynamic> data =
-                                    document.data()! as Map<String, dynamic>;
+                            return ListView(
+                              controller: listScrollController,
+                              reverse: true,
+                              children: snapshot.data!.docs.reversed
+                                  .map((DocumentSnapshot document) {
+                                    Map<String, dynamic> data = document.data()!
+                                        as Map<String, dynamic>;
 
-                                return BoxChat(
-                                    isCurrentUserId:
-                                        currentUserId == data["senderId"],
-                                    message: data["text"]);
-                              })
-                              .toList()
-                              .cast(),
-                        );
-                      }),
-                  Align(
-                      alignment: Alignment.bottomCenter,
-                      child: Container(
-                        color: Colors.grey[100],
-                        child: Row(
-                          children: [
-                            SizedBox(
-                                width: MediaQuery.of(context).size.width - 40,
-                                child: Card(
-                                  shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(10)),
-                                  child: TextFormField(
-                                    controller: textInputController,
-                                    decoration: const InputDecoration(
-                                        hintText: "Type a message...",
-                                        contentPadding: EdgeInsets.all(10)),
+                                    return BoxChat(
+                                        isCurrentUserId:
+                                            currentUserId == data["senderId"],
+                                        message: data["text"]);
+                                  })
+                                  .toList()
+                                  .cast(),
+                            );
+                          })),
+                  Row(
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      children: [
+                        SizedBox(
+                          width: MediaQuery.of(context).size.width - 50,
+                          child: Padding(
+                            padding: const EdgeInsets.only(bottom: 7),
+                            child: TextFormField(
+                              keyboardType: TextInputType.multiline,
+                              maxLines: 5,
+                              minLines: 1,
+                              controller: textInputController,
+                              decoration: const InputDecoration(
+                                  hintText: "Viết gì đó...",
+                                  contentPadding: EdgeInsets.all(10),
+                                  focusedBorder: OutlineInputBorder(
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(30.0)),
+                                    borderSide: BorderSide(
+                                        width: 0.5, color: Colors.grey),
                                   ),
-                                )),
-                            CircleAvatar(
+                                  enabledBorder: OutlineInputBorder(
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(30.0)),
+                                    borderSide: BorderSide(
+                                        width: 0.5, color: Colors.grey),
+                                  )),
+                            ),
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(bottom: 7),
+                          child: CircleAvatar(
+                            child: Transform.rotate(
+                              angle: -45,
                               child: IconButton(
-                                  icon: const Icon(Icons.arrow_right_sharp),
+                                  icon: const Icon(Icons.send),
+                                  iconSize: 25,
                                   onPressed: () => {
                                         handleSend(textInputController.text),
                                       }),
                             ),
-                          ],
+                          ),
                         ),
-                      ))
+                      ])
                 ],
               ))),
     );
