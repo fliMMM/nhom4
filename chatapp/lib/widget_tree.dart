@@ -1,8 +1,6 @@
 import 'package:chatapp/models/auth.dart';
 import 'package:chatapp/screens/Authentication/authentication.dart';
 import 'package:chatapp/screens/conversations_screen.dart';
-import 'package:chatapp/screens/Authentication/login_screen.dart';
-import 'package:chatapp/screens/Authentication/register_screen.dart';
 import 'package:flutter/widgets.dart';
 
 import 'models/store.dart';

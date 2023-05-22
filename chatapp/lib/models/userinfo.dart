@@ -1,7 +1,5 @@
 import 'package:chatapp/models/auth.dart';
-import 'package:chatapp/models/store.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 
 class UsersInfo {
   CollectionReference<Map<String, dynamic>> userRef =

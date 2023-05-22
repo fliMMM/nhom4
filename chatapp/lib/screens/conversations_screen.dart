@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:chatapp/models/auth.dart';
 import 'package:chatapp/models/conversation.dart';
 import 'package:chatapp/models/store.dart';

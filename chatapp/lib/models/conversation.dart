@@ -1,6 +1,5 @@
 import 'package:chatapp/models/auth.dart';
 import 'package:chatapp/models/store.dart';
-import 'package:chatapp/models/userinfo.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Conversation {
