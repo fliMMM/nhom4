@@ -9,16 +9,16 @@ import '../widgets/boxchat.dart';
 import '../widgets/appbar_chatscreen.dart';
 
 class ChatScreen extends StatefulWidget {
-  final UsersInfo user;
+  final user;
   final String conversationsId;
-  const ChatScreen({super.key, required this.conversationsId, required this.user});
+  const ChatScreen(
+      {super.key, required this.conversationsId, required this.user});
 
   @override
   State<ChatScreen> createState() => _ChatScreenState();
 }
 
 class _ChatScreenState extends State<ChatScreen> {
-  
   final ScrollController listScrollController = ScrollController();
   final TextEditingController textInputController = TextEditingController();
   int _limit = 20;
@@ -70,14 +70,8 @@ class _ChatScreenState extends State<ChatScreen> {
       child: Scaffold(
           appBar: AppBar(
             title: InkWell(
-              onTap: () {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (_) => ProfileScreenFriend(user: widget.user)));
-              },
               child: MessBar(
-                peerInfo: peerInfo,
+                peerInfo: widget.user,
               ),
             ),
           ),

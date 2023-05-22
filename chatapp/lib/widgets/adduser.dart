@@ -6,10 +6,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-import '../models/userinfo.dart';
-
 class AddUser extends StatefulWidget {
-  final UsersInfo user;
+  final user;
   const AddUser({super.key, required this.user});
 
   @override
@@ -56,14 +54,14 @@ class _AddUserState extends State<AddUser> {
                     fit: BoxFit.cover,
                     width: MediaQuery.of(context).size.height * .055,
                     height: MediaQuery.of(context).size.height * .055,
-                    imageUrl: widget.user.photoUrl,
+                    imageUrl: widget.user["photoUrl"],
                     errorWidget: (context, url, error) => const CircleAvatar(
                           child: Icon(CupertinoIcons.person),
                         )),
               )),
-          title: Text(widget.user.displayName == ""
-              ? widget.user.email
-              : widget.user.displayName),
+          title: Text(widget.user["displayName"] == ""
+              ? widget.user["email"]
+              : widget.user["displayName"]),
         ),
       ),
     );

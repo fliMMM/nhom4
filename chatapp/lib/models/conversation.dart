@@ -15,10 +15,10 @@ class Conversation {
         .snapshots();
   }
 
-  Future<String> addConversation(UsersInfo peerInfo) async {
+  Future<String> addConversation(Map<String, dynamic> peerInfo) async {
     var currentUser = Auth().getCurrentUSer();
     var currentUSerId = currentUser?.uid;
-    var peerId = peerInfo.uid;
+    var peerId = peerInfo["uid"];
     String conversationId;
 
     if (currentUSerId.hashCode < peerId.hashCode) {
@@ -33,16 +33,8 @@ class Conversation {
         "id": conversationId,
         "last_message": {"senderId": null, "message": ""},
         "userIds": [peerId, currentUSerId],
-        "user_$currentUSerId": {
-          "displayName": Store.me.displayName,
-          "email": Store.me.email,
-          "photoUrl": Store.me.photoUrl
-        },
-        "user_$peerId": {
-          "displayName": peerInfo.displayName,
-          "email": peerInfo.email,
-          "photoUrl": peerInfo.photoUrl
-        }
+        "user_$currentUSerId": Store.me.toJson(),
+        "user_$peerId": peerInfo
       };
       await conversationRef.doc(conversationId).set(conversation);
       return conversationId;
