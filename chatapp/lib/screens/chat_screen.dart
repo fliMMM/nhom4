@@ -1,6 +1,7 @@
 import 'package:chatapp/models/auth.dart';
 import 'package:chatapp/models/message.dart';
 import 'package:chatapp/models/userinfo.dart';
+import 'package:chatapp/screens/profile_scrreen_friend.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -8,14 +9,16 @@ import '../widgets/boxchat.dart';
 import '../widgets/appbar_chatscreen.dart';
 
 class ChatScreen extends StatefulWidget {
+  final UsersInfo user;
   final String conversationsId;
-  const ChatScreen({super.key, required this.conversationsId});
+  const ChatScreen({super.key, required this.conversationsId, required this.user});
 
   @override
   State<ChatScreen> createState() => _ChatScreenState();
 }
 
 class _ChatScreenState extends State<ChatScreen> {
+  
   final ScrollController listScrollController = ScrollController();
   final TextEditingController textInputController = TextEditingController();
   int _limit = 20;
@@ -66,8 +69,16 @@ class _ChatScreenState extends State<ChatScreen> {
       },
       child: Scaffold(
           appBar: AppBar(
-            title: MessBar(
-              peerInfo: peerInfo,
+            title: InkWell(
+              onTap: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (_) => ProfileScreenFriend(user: widget.user)));
+              },
+              child: MessBar(
+                peerInfo: peerInfo,
+              ),
             ),
           ),
           body: Container(

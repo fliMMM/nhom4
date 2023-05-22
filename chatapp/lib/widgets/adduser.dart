@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:chatapp/models/conversation.dart';
+import 'package:chatapp/models/store.dart';
 import 'package:chatapp/screens/chat_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
@@ -27,6 +28,7 @@ class _AddUserState extends State<AddUser> {
             MaterialPageRoute(
                 builder: (context) => ChatScreen(
                       conversationsId: conversationId,
+                      user: widget.user,
                     )));
       }
     } on FirebaseException catch (e) {
