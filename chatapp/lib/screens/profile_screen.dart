@@ -9,9 +9,7 @@ import 'package:chatapp/models/store.dart';
 import 'package:chatapp/widgets/dialogs.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:image_picker/image_picker.dart';
-import '../models/auth.dart';
 import '../models/userinfo.dart';
 
 class ProfileScreen extends StatefulWidget {
@@ -28,42 +26,47 @@ class _ProfileScreenState extends State<ProfileScreen> {
   final _formKey = GlobalKey<FormState>();
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text("Profile screen"),
-      ),
-      body: Form(
-        key: _formKey,
-        child: Padding(
-          padding: EdgeInsets.symmetric(
-              horizontal: MediaQuery.of(context).size.width * .05),
-          child: SingleChildScrollView(
-              child: Column(
-            children: [
-              const SizedBox(
-                height: 20,
-              ),
-              // Anh dai dien
-              _getImage(),
-              const SizedBox(
-                height: 18,
-              ),
-              // Email
-              _emailInfo(),
-              const SizedBox(
-                height: 18,
-              ),
-              // field name
-              _fieldNameInfo(),
-              const SizedBox(
-                height: 18,
-              ),
-              // field phone
-              _fieldPhone(),
-              const SizedBox(height: 12),
-              _buttonUpdate(),
-            ],
-          )),
+    return GestureDetector(
+      onTap: () {
+        FocusScope.of(context).unfocus();
+      },
+      child: Scaffold(
+        appBar: AppBar(
+          title: const Text("Profile screen"),
+        ),
+        body: Form(
+          key: _formKey,
+          child: Padding(
+            padding: EdgeInsets.symmetric(
+                horizontal: MediaQuery.of(context).size.width * .05),
+            child: SingleChildScrollView(
+                child: Column(
+              children: [
+                const SizedBox(
+                  height: 20,
+                ),
+                // Anh dai dien
+                _getImage(),
+                const SizedBox(
+                  height: 18,
+                ),
+                // Email
+                _emailInfo(),
+                const SizedBox(
+                  height: 18,
+                ),
+                // field name
+                _fieldNameInfo(),
+                const SizedBox(
+                  height: 18,
+                ),
+                // field phone
+                _fieldPhone(),
+                const SizedBox(height: 12),
+                _buttonUpdate(),
+              ],
+            )),
+          ),
         ),
       ),
     );
@@ -117,7 +120,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   Widget _emailInfo() {
     return Text(
-      '${widget.user.email}',
+      widget.user.email,
       style: const TextStyle(color: Colors.black54, fontSize: 16),
     );
   }
@@ -129,12 +132,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
       validator: (value) =>
           value != null && value.isNotEmpty ? null : 'Require Field',
       decoration: InputDecoration(
-        prefixIcon: Icon(color: Colors.blue, Icons.person),
+        prefixIcon: const Icon(color: Colors.blue, Icons.person),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
         ),
         hintText: 'eg: Kaye',
-        label: Text('name'),
+        label: const Text('name'),
       ),
     );
   }
@@ -146,12 +149,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
       validator: (value) =>
           value != null && value.isNotEmpty ? null : 'Require Field',
       decoration: InputDecoration(
-        prefixIcon: Icon(color: Colors.blue, Icons.info),
+        prefixIcon: const Icon(color: Colors.blue, Icons.info),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
         ),
         hintText: '090290122121',
-        label: Text('phone'),
+        label: const Text('phone'),
       ),
     );
   }
@@ -159,10 +162,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
   Widget _buttonUpdate() {
     return ElevatedButton.icon(
       style: ElevatedButton.styleFrom(
-          shape: StadiumBorder(),
+          shape: const StadiumBorder(),
           minimumSize: Size(MediaQuery.of(context).size.width * .5,
               MediaQuery.of(context).size.height * .05)),
       onPressed: () {
+        FocusManager.instance.primaryFocus?.unfocus();
         if (_formKey.currentState!.validate()) {
           _formKey.currentState!.save();
           Store.updateUserInfo().then((value) {
@@ -170,11 +174,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
           });
         }
       },
-      icon: Icon(
+      icon: const Icon(
         Icons.edit,
         size: 28,
       ),
-      label: Text('Update', style: TextStyle(fontSize: 16)),
+      label: const Text('Update', style: TextStyle(fontSize: 16)),
     );
   }
 
@@ -196,7 +200,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 textAlign: TextAlign.center,
                 style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
               ),
-              SizedBox(
+              const SizedBox(
                 height: 15,
               ),
               Row(

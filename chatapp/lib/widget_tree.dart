@@ -5,6 +5,8 @@ import 'package:chatapp/screens/Authentication/login_screen.dart';
 import 'package:chatapp/screens/Authentication/register_screen.dart';
 import 'package:flutter/widgets.dart';
 
+import 'models/store.dart';
+
 class WidgetTree extends StatefulWidget {
   const WidgetTree({super.key});
 
@@ -13,6 +15,12 @@ class WidgetTree extends StatefulWidget {
 }
 
 class _WidgetTreeState extends State<WidgetTree> {
+  @override
+  void initState() {
+    Store.getSelfInfo();
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return StreamBuilder(
