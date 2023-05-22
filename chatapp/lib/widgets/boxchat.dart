@@ -1,4 +1,3 @@
-import 'package:chatapp/models/auth.dart';
 import 'package:flutter/material.dart';
 
 class BoxChat extends StatelessWidget {

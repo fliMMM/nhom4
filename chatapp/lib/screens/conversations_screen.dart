@@ -9,8 +9,6 @@ import 'package:flutter/material.dart';
 import '../models/userinfo.dart';
 import '../widgets/logo.dart';
 
-List _userFilter = [];
-
 class ConversationScreen extends StatefulWidget {
   const ConversationScreen({super.key});
 
@@ -38,26 +36,6 @@ class _ConversationScreenState extends State<ConversationScreen> {
 
   @override
   Widget build(BuildContext context) {
-    void handleUserFilter(String text) {
-      // ignore: avoid_print
-      List rs = [];
-      if (text.isEmpty) {
-        rs = [];
-      } else {
-        rs = []
-            .where((user) => user["sender"]
-                .toString()
-                .toLowerCase()
-                .contains(text.toLowerCase()))
-            .toList();
-      }
-      setState(() {
-        _userFilter = rs;
-        // ignore: avoid_print
-        print(_userFilter);
-      });
-    }
-
     return GestureDetector(
       onTap: () {
         FocusScope.of(context).unfocus();
@@ -116,7 +94,6 @@ class _ConversationScreenState extends State<ConversationScreen> {
                                         labelStyle: TextStyle(
                                             color: Colors.black, fontSize: 15)),
                                     onChanged: (val) {
-                                      print(val);
                                       check_search = true;
                                       searchList.clear();
                                       for (var i in list) {
@@ -172,7 +149,8 @@ class _ConversationScreenState extends State<ConversationScreen> {
                                               return AddUser(
                                                   user: check_search
                                                       ? searchList[index]
-                                                      : list[index]);
+                                                          .toJson()
+                                                      : list[index].toJson());
                                             });
                                       })
                                 ],
@@ -224,9 +202,8 @@ class _ConversationScreenState extends State<ConversationScreen> {
                             .map((DocumentSnapshot document) {
                               Map<String, dynamic> data =
                                   document.data()! as Map<String, dynamic>;
-                              var peerId;
+                              String peerId;
                               var userIds = data["id"].split("-");
-                              print(data["id"].split("-"));
                               if (userIds[0] == Auth().getCurrentUSer()?.uid) {
                                 peerId = userIds[1];
                               } else {
@@ -235,21 +212,13 @@ class _ConversationScreenState extends State<ConversationScreen> {
                               var peer = data["user_$peerId"];
                               return Card(
                                 child: GestureDetector(
-                                  onLongPress: () => print('txt'),
-                                  onVerticalDragStart: (details) => print('tc'),
                                   onTap: () {
-                                    for (var i = 0; i < list.length; i++) {
-                                      if (list[i].uid == userIds[1]) {
-                                        user = list[i];
-                                      }
-                                    }
-                                    print(user.uid);
                                     Navigator.push(
                                         context,
                                         MaterialPageRoute(
                                             builder: (context) => ChatScreen(
                                                   conversationsId: data["id"],
-                                                  user: user,
+                                                  user: peer,
                                                 )));
                                   },
                                   child: Row(

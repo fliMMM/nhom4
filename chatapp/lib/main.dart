@@ -1,10 +1,4 @@
-import 'package:chatapp/screens/chat_screen.dart';
-import 'package:chatapp/screens/conversations_screen.dart';
-import 'package:chatapp/screens/Authentication/login_screen.dart';
-import 'package:chatapp/screens/profile_screen.dart';
-import 'package:chatapp/screens/Authentication/register_screen.dart';
 import 'package:chatapp/widget_tree.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 
