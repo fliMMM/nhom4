@@ -8,7 +8,6 @@ class Store {
   static FirebaseAuth auth = FirebaseAuth.instance;
   static FirebaseFirestore firestore = FirebaseFirestore.instance;
   static User get user => auth.currentUser!;
-
   static Future<void> getSelfInfo() async {
     //get data user
     await firestore
@@ -18,7 +17,6 @@ class Store {
         .then((user) async {
       if (user.exists) {
         me = UsersInfo.fromJson(user.data()!);
-        log('My data: ${user.data()} ');
       }
     });
   }

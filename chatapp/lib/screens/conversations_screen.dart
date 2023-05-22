@@ -2,7 +2,7 @@ import 'package:chatapp/models/auth.dart';
 import 'package:chatapp/models/conversation.dart';
 import 'package:chatapp/models/store.dart';
 import 'package:chatapp/screens/chat_screen.dart';
-import 'package:chatapp/widgets/cardadduser.dart';
+import 'package:chatapp/widgets/adduser.dart';
 import 'package:chatapp/widgets/drawer.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -21,17 +21,19 @@ class ConversationScreen extends StatefulWidget {
 class _ConversationScreenState extends State<ConversationScreen> {
   late Stream<QuerySnapshot> conversationStream;
   bool check_search = false;
+  late UsersInfo user;
   List<UsersInfo> list = [];
   List<UsersInfo> searchList = [];
+
   var currentUserId = Auth().getCurrentUSer()?.toString();
   late Stream<QuerySnapshot> userStream;
 
   @override
   void initState() {
-    super.initState();
     Store.getSelfInfo();
+    super.initState();
     conversationStream = Conversation().getConversationStream();
-    userStream = Store.firestore.collection('Users').snapshots();
+    userStream = UsersInfo.test().getUserStream();
   }
 
   @override
@@ -109,7 +111,6 @@ class _ConversationScreenState extends State<ConversationScreen> {
                                       FocusManager.instance.primaryFocus
                                           ?.unfocus();
                                     },
-                                    autofocus: true,
                                     decoration: const InputDecoration(
                                         labelText: 'Đến:',
                                         labelStyle: TextStyle(
@@ -153,39 +154,26 @@ class _ConversationScreenState extends State<ConversationScreen> {
                                   StreamBuilder(
                                       stream: userStream,
                                       builder: (context, snapshot) {
-                                        switch (snapshot.connectionState) {
-                                          // if data is loading
-                                          case ConnectionState.waiting:
-                                          case ConnectionState.none:
-                                            return const Center(
-                                                child:
-                                                    CircularProgressIndicator());
-                                          // if some or all data is loaded then show it
-                                          case ConnectionState.active:
-                                          case ConnectionState.done:
-                                            final data = snapshot.data?.docs;
-                                            list = data
-                                                    ?.map((e) =>
-                                                        UsersInfo.fromJson(
-                                                            e.data() as Map<
-                                                                String,
-                                                                dynamic>))
-                                                    .toList() ??
-                                                [];
-                                            return ListView.builder(
-                                                itemCount: check_search
-                                                    ? searchList.length
-                                                    : list.length,
-                                                physics:
-                                                    const BouncingScrollPhysics(),
-                                                shrinkWrap: true,
-                                                itemBuilder: (context, index) {
-                                                  return AddUser(
-                                                      user: check_search
-                                                          ? searchList[index]
-                                                          : list[index]);
-                                                });
-                                        }
+                                        final data = snapshot.data?.docs;
+                                        list = data
+                                                ?.map((e) => UsersInfo.fromJson(
+                                                    e.data() as Map<String,
+                                                        dynamic>))
+                                                .toList() ??
+                                            [];
+                                        return ListView.builder(
+                                            itemCount: check_search
+                                                ? searchList.length
+                                                : list.length,
+                                            physics:
+                                                const BouncingScrollPhysics(),
+                                            shrinkWrap: true,
+                                            itemBuilder: (context, index) {
+                                              return AddUser(
+                                                  user: check_search
+                                                      ? searchList[index]
+                                                      : list[index]);
+                                            });
                                       })
                                 ],
                               ),
@@ -205,40 +193,9 @@ class _ConversationScreenState extends State<ConversationScreen> {
           width: MediaQuery.of(context).size.width,
           child: Column(
             children: [
-              Container(
-                  margin: const EdgeInsets.only(top: 10, bottom: 10),
-                  width: MediaQuery.of(context).size.width - 50,
-                  height: 40,
-                  padding: const EdgeInsets.only(left: 10, right: 10),
-                  decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(30),
-                      color: Colors.grey[200]),
-                  child: Row(
-                    children: [
-                      const Icon(
-                        Icons.search,
-                        color: Colors.grey,
-                        size: 28,
-                      ),
-                      SizedBox(
-                        width: MediaQuery.of(context).size.width - 120,
-                        child: TextFormField(
-                          textAlignVertical: TextAlignVertical.center,
-                          // ignore: avoid_print
-                          onChanged: (value) => handleUserFilter(value),
-                          style: const TextStyle(
-                            // color: Colors.white,
-                            fontSize: 20,
-                          ),
-                          decoration: const InputDecoration(
-                            isCollapsed: true,
-                            contentPadding: EdgeInsets.zero,
-                            border: InputBorder.none,
-                          ),
-                        ),
-                      ),
-                    ],
-                  )),
+              const SizedBox(
+                height: 10,
+              ),
               Expanded(
                 child: StreamBuilder<QuerySnapshot>(
                     stream: conversationStream,
@@ -270,21 +227,29 @@ class _ConversationScreenState extends State<ConversationScreen> {
                               var peerId;
                               var userIds = data["id"].split("-");
                               print(data["id"].split("-"));
-                              if (userIds[0] == Store.me.uid) {
+                              if (userIds[0] == Auth().getCurrentUSer()?.uid) {
                                 peerId = userIds[1];
                               } else {
                                 peerId = userIds[0];
                               }
                               var peer = data["user_$peerId"];
-
                               return Card(
                                 child: GestureDetector(
+                                  onLongPress: () => print('txt'),
+                                  onVerticalDragStart: (details) => print('tc'),
                                   onTap: () {
+                                    for (var i = 0; i < list.length; i++) {
+                                      if (list[i].uid == userIds[1]) {
+                                        user = list[i];
+                                      }
+                                    }
+                                    print(user.uid);
                                     Navigator.push(
                                         context,
                                         MaterialPageRoute(
                                             builder: (context) => ChatScreen(
                                                   conversationsId: data["id"],
+                                                  user: user,
                                                 )));
                                   },
                                   child: Row(

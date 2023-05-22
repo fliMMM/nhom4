@@ -1,4 +1,5 @@
 import 'package:chatapp/models/auth.dart';
+import 'package:chatapp/models/store.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
@@ -47,5 +48,11 @@ class UsersInfo {
         await userRef.doc(peerId).get();
 
     return peerInfo.data();
+  }
+
+  Stream<QuerySnapshot> getUserStream() {
+    return userRef
+        .where('uid', isNotEqualTo: Auth().getCurrentUSer()?.uid)
+        .snapshots();
   }
 }
