@@ -34,6 +34,19 @@ class _ConversationScreenState extends State<ConversationScreen> {
     userStream = UsersInfo.test().getUserStream();
   }
 
+  String isCurrentUser(String id) {
+    String user = "";
+    if (id == Store.me.uid) {
+      user = "Tôi: ";
+    }
+
+    if (id != Store.me.uid) {
+      user = "";
+    }
+
+    return user;
+  }
+
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -262,8 +275,11 @@ class _ConversationScreenState extends State<ConversationScreen> {
                                                 data["last_message"]
                                                             ["message"] !=
                                                         ""
-                                                    ? data["last_message"]
-                                                        ["message"]
+                                                    ? (isCurrentUser(
+                                                            data["last_message"]
+                                                                ["senderId"]) +
+                                                        data["last_message"]
+                                                            ["message"])
                                                     : "Hãy viết gì đó...",
                                                 overflow: TextOverflow.ellipsis,
                                                 style: const TextStyle(
