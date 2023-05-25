@@ -35,16 +35,11 @@ class _ConversationScreenState extends State<ConversationScreen> {
   }
 
   String isCurrentUser(String id) {
-    String user = "";
-    if (id == Store.me.uid) {
-      user = "Tôi: ";
+    if (id == Auth().getCurrentUSer()?.uid) {
+      return "Tôi: ";
     }
 
-    if (id != Store.me.uid) {
-      user = "";
-    }
-
-    return user;
+    return "";
   }
 
   @override

@@ -47,7 +47,7 @@ class _ChatScreenState extends State<ChatScreen> {
   }
 
   void handleSend(String text) {
-    MessageModel().sendMessage(widget.conversationsId, text);
+    MessageModel().sendMessage(widget.conversationsId, text.trim());
 
     setState(() {
       textInputController.clear();
