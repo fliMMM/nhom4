@@ -53,7 +53,7 @@ class _ProfileScreenFriendState extends State<ProfileScreenFriend> {
                             fontWeight: FontWeight.w500,
                             fontSize: 15),
                       ),
-                      Text(widget.user["phoneNumber"],
+                      Text(widget.user["phoneNumber"] ?? "",
                           style: const TextStyle(
                               color: Colors.black54, fontSize: 15)),
                     ],

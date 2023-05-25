@@ -28,13 +28,7 @@ class Store {
         .doc(user.uid)
         .update({'displayName': me.displayName, 'phoneNumber': me.phoneNumber});
 
-    var updateData = {
-      "user_$id": {
-        "displayName": me.displayName,
-        "email": me.email,
-        "photoUrl": me.photoUrl
-      }
-    };
+    var updateData = {"user_$id": me.toJson()};
     FirebaseFirestore.instance
         .collection("Conversations")
         .where("userIds", arrayContains: id)
